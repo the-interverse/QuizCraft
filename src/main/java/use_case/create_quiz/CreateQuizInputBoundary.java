@@ -9,5 +9,5 @@ public interface CreateQuizInputBoundary {
      * Executes the login use case.
      * @param loginInputData the input data
      */
-    void execute(CreateQuizInputData loginInputData);
+    void execute(CreateQuizInputData InputData);
 }
