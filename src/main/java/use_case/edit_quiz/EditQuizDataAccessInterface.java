@@ -1,9 +1,9 @@
-package use_case.login;
+package use_case.edit_quiz;
 
 /**
  * DAO for the Login Use Case.
  */
-public interface LoginUserDataAccessInterface {
+public interface EditQuizDataAccessInterface {
 
     /**
      * Checks if the given username exists.

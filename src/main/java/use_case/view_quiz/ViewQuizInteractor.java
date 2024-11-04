@@ -1,20 +1,20 @@
-package use_case.login;
+package use_case.view_quiz;
 
 /**
  * The Login Interactor.
  */
-public class LoginInteractor implements LoginInputBoundary {
-    private final LoginUserDataAccessInterface userDataAccessObject;
-    private final LoginOutputBoundary loginPresenter;
+public class ViewQuizInteractor implements ViewQuizInputBoundary {
+    private final ViewQuizDataAccessInterface userDataAccessObject;
+    private final ViewQuizOutputBoundary loginPresenter;
 
-    public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
-                           LoginOutputBoundary loginOutputBoundary) {
+    public ViewQuizInteractor(ViewQuizDataAccessInterface userDataAccessInterface,
+                              ViewQuizOutputBoundary viewQuizOutputBoundary) {
         this.userDataAccessObject = userDataAccessInterface;
-        this.loginPresenter = loginOutputBoundary;
+        this.loginPresenter = viewQuizOutputBoundary;
     }
 
     @Override
-    public void execute(LoginInputData loginInputData) {
+    public void execute(ViewQuizInputData loginInputData) {
         final String username = loginInputData.getUsername();
         final String password = loginInputData.getPassword();
         if (!userDataAccessObject.existsByName(username)) {
@@ -30,7 +30,7 @@ public class LoginInteractor implements LoginInputBoundary {
                 final User user = userDataAccessObject.get(loginInputData.getUsername());
 
                 userDataAccessObject.setCurrentUsername(user.getName());
-                final LoginOutputData loginOutputData = new LoginOutputData(user.getName(), false);
+                final ViewQuizOutputData loginOutputData = new ViewQuizOutputData(user.getName(), false);
                 loginPresenter.prepareSuccessView(loginOutputData);
             }
         }

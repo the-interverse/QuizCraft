@@ -1,20 +1,20 @@
-package use_case.login;
+package use_case.dashboard;
 
 /**
  * The Login Interactor.
  */
-public class LoginInteractor implements LoginInputBoundary {
-    private final LoginUserDataAccessInterface userDataAccessObject;
-    private final LoginOutputBoundary loginPresenter;
+public class DashboardInteractor implements DashboardInputBoundary {
+    private final DashboardDataAccessInterface userDataAccessObject;
+    private final DashboardOutputBoundary loginPresenter;
 
-    public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
-                           LoginOutputBoundary loginOutputBoundary) {
+    public DashboardInteractor(DashboardDataAccessInterface userDataAccessInterface,
+                               DashboardOutputBoundary loginOutputBoundary) {
         this.userDataAccessObject = userDataAccessInterface;
         this.loginPresenter = loginOutputBoundary;
     }
 
     @Override
-    public void execute(LoginInputData loginInputData) {
+    public void execute(DashboardInputData loginInputData) {
         final String username = loginInputData.getUsername();
         final String password = loginInputData.getPassword();
         if (!userDataAccessObject.existsByName(username)) {
@@ -30,7 +30,7 @@ public class LoginInteractor implements LoginInputBoundary {
                 final User user = userDataAccessObject.get(loginInputData.getUsername());
 
                 userDataAccessObject.setCurrentUsername(user.getName());
-                final LoginOutputData loginOutputData = new LoginOutputData(user.getName(), false);
+                final DashboardOutputData loginOutputData = new DashboardOutputData(user.getName(), false);
                 loginPresenter.prepareSuccessView(loginOutputData);
             }
         }

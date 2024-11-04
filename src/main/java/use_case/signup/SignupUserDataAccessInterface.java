@@ -1,7 +1,5 @@
 package use_case.signup;
 
-import entity.User;
-
 /**
  * DAO for the Signup Use Case.
  */

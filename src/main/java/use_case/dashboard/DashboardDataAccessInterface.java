@@ -1,9 +1,9 @@
-package use_case.login;
+package use_case.dashboard;
 
 /**
  * DAO for the Login Use Case.
  */
-public interface LoginUserDataAccessInterface {
+public interface DashboardDataAccessInterface {
 
     /**
      * Checks if the given username exists.
