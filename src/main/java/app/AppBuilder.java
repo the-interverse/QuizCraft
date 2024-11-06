@@ -9,8 +9,6 @@ import javax.swing.WindowConstants;
 import data_access.InMemoryUserDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.ChangePasswordController;
-import interface_adapter.change_password.ChangePasswordPresenter;
 import interface_adapter.change_password.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -20,9 +18,6 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-import use_case.change_password.ChangePasswordInputBoundary;
-import use_case.change_password.ChangePasswordInteractor;
-import use_case.change_password.ChangePasswordOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -36,6 +31,14 @@ import view.LoggedInView;
 import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
+
+import interface_adapter.create_quiz.CreateQuizController;
+import interface_adapter.create_quiz.CreateQuizPresenter;
+import interface_adapter.create_quiz.CreateQuizViewModel;
+import view.CreateQuizView;
+import use_case.create_quiz.CreateQuizInteractor;
+import use_case.create_quiz.CreateQuizInputBoundary;
+import use_case.create_quiz.CreateQuizOutputBoundary;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -65,6 +68,10 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
+
+
+    private CreateQuizViewModel createQuizViewModel;
+    private CreateQuizView createQuizView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -134,23 +141,6 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the Change Password Use Case to the application.
-     * @return this builder
-     */
-    public AppBuilder addChangePasswordUseCase() {
-        final ChangePasswordOutputBoundary changePasswordOutputBoundary =
-                new ChangePasswordPresenter(loggedInViewModel);
-
-        final ChangePasswordInputBoundary changePasswordInteractor =
-                new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
-
-        final ChangePasswordController changePasswordController =
-                new ChangePasswordController(changePasswordInteractor);
-        loggedInView.setChangePasswordController(changePasswordController);
-        return this;
-    }
-
-    /**
      * Adds the Logout Use Case to the application.
      * @return this builder
      */
@@ -166,6 +156,24 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addCreateQuizView() {
+        createQuizViewModel = new CreateQuizViewModel();
+        createQuizView = new CreateQuizView(createQuizViewModel);
+        cardPanel.add(createQuizView, createQuizView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addCreateQuizUseCase() {
+        final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
+                loggedInViewModel, createQuizViewModel);
+        final CreateQuizInputBoundary createQuizInteractor =
+                new CreateQuizInteractor(createQuizOutputBoundary);
+
+        final CreateQuizController createQuizController = new CreateQuizController(createQuizInteractor);
+        createQuizView.setCreateQuizController(createQuizController);
+        return this;
+    }
+
     /**
      * Creates the JFrame for the application and initially sets the SignupView to be displayed.
      * @return the application
@@ -176,7 +184,7 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(signupView.getViewName());
+        viewManagerModel.setState(createQuizView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;
