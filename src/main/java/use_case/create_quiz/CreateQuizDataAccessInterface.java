@@ -1,5 +1,7 @@
 package use_case.create_quiz;
 
+
+import entity.User;
 /**
  * DAO for the Login Use Case.
  */

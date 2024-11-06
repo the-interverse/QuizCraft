@@ -1,5 +1,8 @@
 package use_case.change_password;
 
+import entity.UserFactory;
+import entity.User;
+
 /**
  * The Change Password Interactor.
  */

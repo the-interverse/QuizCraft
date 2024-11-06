@@ -1,6 +1,8 @@
 package use_case.login;
 
 import data_access.InMemoryUserDataAccessObject;
+import entity.User;
+import entity.UserFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,8 +14,8 @@ class LoginInteractorTest {
         LoginInputData inputData = new LoginInputData("Paul", "password");
         LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
 
-        // For the success test, we need to add Paul to the data access repository before we log in.
-        UserFactory factory = new CommonUserFactory();
+        // For the success test, we need  to add Paul to the data access repository before we log in.
+        UserFactory factory = new UserFactory();
         User user = factory.create("Paul", "password");
         userRepository.save(user);
 
@@ -40,7 +42,7 @@ class LoginInteractorTest {
         LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
 
         // For the success test, we need to add Paul to the data access repository before we log in.
-        UserFactory factory = new CommonUserFactory();
+        UserFactory factory = new UserFactory();
         User user = factory.create("Paul", "password");
         userRepository.save(user);
 
@@ -70,7 +72,7 @@ class LoginInteractorTest {
 
         // For this failure test, we need to add Paul to the data access repository before we log in, and
         // the passwords should not match.
-        UserFactory factory = new CommonUserFactory();
+        UserFactory factory = new UserFactory();
         User user = factory.create("Paul", "password");
         userRepository.save(user);
 
