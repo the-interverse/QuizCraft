@@ -9,7 +9,9 @@ import javax.swing.WindowConstants;
 import data_access.InMemoryUserDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInViewModel;
+import interface_adapter.dashboard.LoggedInController;
+import interface_adapter.dashboard.LoggedInPresenter;
+import interface_adapter.dashboard.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -18,6 +20,9 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.dashboard.LoggedInInputBoundary;
+import use_case.dashboard.LoggedInInteractor;
+import use_case.dashboard.LoggedInOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -61,6 +66,7 @@ public class AppBuilder {
 
     // thought question: is the hard dependency below a problem?
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
+    private final InMemoryUserDataAccessObject loggedInDataAccessObject = new InMemoryUserDataAccessObject();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
@@ -151,8 +157,18 @@ public class AppBuilder {
         final LogoutInputBoundary logoutInteractor =
                 new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
 
+        final LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,
+                loggedInViewModel);
+
+        final LoggedInInputBoundary loggedInInteractor =
+                new LoggedInInteractor(loggedInOutputBoundary);
+
+
         final LogoutController logoutController = new LogoutController(logoutInteractor);
+        final LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
+
         loggedInView.setLogoutController(logoutController);
+        loggedInView.setLoggedInController(loggedInController);
         return this;
     }
 
@@ -184,7 +200,7 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(createQuizView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
+        viewManagerModel.setState(loggedInView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;
