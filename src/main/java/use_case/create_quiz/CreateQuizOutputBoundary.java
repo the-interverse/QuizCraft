@@ -5,13 +5,13 @@ package use_case.create_quiz;
  */
 public interface CreateQuizOutputBoundary {
     /**
-     * Prepares the success view for the Create Quiz Use Case.
+     * Prepares the success view for the Login Use Case.
      * @param outputData the output data
      */
     void prepareSuccessView(CreateQuizOutputData outputData);
 
     /**
-     * Prepares the failure view for the Create Quiz Use Case.
+     * Prepares the failure view for the Login Use Case.
      * @param errorMessage the explanation of the failure
      */
     void prepareFailView(String errorMessage);
