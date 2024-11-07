@@ -9,33 +9,16 @@ public interface CreateQuizDataAccessInterface {
 
     /**
      * Checks if the given username exists.
-     * @param username the username to look for
+     * @param userUsername the username to look for
      * @return true if a user with the given username exists; false otherwise
      */
-    boolean existsByName(String username);
+    boolean existsByUser(String userUsername);
 
     /**
      * Saves the user.
-     * @param user the user to save
+     * @param userUsername the user to save
+     * @param quiz quiz to save
      */
-    void save(User user);
+    void saveQuiz(User userUsername, Quiz quiz);
 
-    /**
-     * Returns the user with the given username.
-     * @param username the username to look up
-     * @return the user with the given username
-     */
-    User get(String username);
-
-    /**
-     * Returns the username of the curren user of the application.
-     * @return the username of the current user; null indicates that no one is logged into the application.
-     */
-    String getCurrentUsername();
-
-    /**
-     * Sets the username indicating who is the current user of the application.
-     * @param username the new current username; null to indicate that no one is currently logged into the application.
-     */
-    void setCurrentUsername(String username);
 }

@@ -1,13 +1,13 @@
 package use_case.create_quiz;
 
 /**
- * Input Boundary for actions which are related to logging in.
+ * Input Boundary for actions which are related to quiz creation.
  */
 public interface CreateQuizInputBoundary {
 
     /**
-     * Executes the login use case.
-     * @param loginInputData the input data
+     * Executes the Create Quiz use case.
+     * @param createQuizInputData the input data
      */
-    void execute(CreateQuizInputData loginInputData);
+    void execute(CreateQuizInputData createQuizInputData);
 }
