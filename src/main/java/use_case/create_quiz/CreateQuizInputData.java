@@ -1,24 +1,32 @@
 package use_case.create_quiz;
+import java.io.File;
 
-/**
- * The Input Data for the Login Use Case.
- */
 public class CreateQuizInputData {
+    private String quizName;
+    private int numQuestions;
+    private String difficulty;
+    private File pdf;
 
-    private final String username;
-    private final String password;
-
-    public CreateQuizInputData(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public CreateQuizInputData(String quizName, int numQuestions, String difficulty, File pdf) {
+        this.quizName = quizName;
+        this.numQuestions = numQuestions;
+        this.difficulty = difficulty;
+        this.pdf = pdf;
     }
 
-    String getUsername() {
-        return username;
+    public String getQuizName() {
+        return quizName;
     }
 
-    String getPassword() {
-        return password;
+    public int getNumQuestions() {
+        return numQuestions;
     }
 
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public File getPdf() {
+        return pdf;
+    }
 }

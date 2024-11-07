@@ -1,20 +1,19 @@
 package use_case.create_quiz;
+import entity.Quiz;
 
 /**
  * Output Data for the Login Use Case.
  */
 public class CreateQuizOutputData {
 
-    private final String username;
-    private final boolean useCaseFailed;
+    private Quiz quiz;
 
-    public CreateQuizOutputData(String username, boolean useCaseFailed) {
-        this.username = username;
-        this.useCaseFailed = useCaseFailed;
+    public CreateQuizOutputData(Quiz quiz) {
+        this.quiz = quiz;
     }
 
-    public String getUsername() {
-        return username;
+    public Quiz getQuiz() {
+        return quiz;
     }
 
 }
