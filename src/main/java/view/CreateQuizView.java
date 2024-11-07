@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import interface_adapter.create_quiz.CreateQuizViewModel;
 import interface_adapter.create_quiz.CreateQuizState;
 import interface_adapter.create_quiz.CreateQuizController;
-import interface_adapter.logout.LogoutController;
 
 public class CreateQuizView extends JPanel implements ActionListener, PropertyChangeListener {
     private CreateQuizController createQuizController;
@@ -123,6 +122,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
             viewModel.setState(state); // Trigger quiz creation via ViewModel updates
         } else if (evt.getSource() == cancelButton) {
             resetFields();
+            createQuizController.switchToDashboardView();
         }
     }
 

@@ -28,4 +28,10 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
     public void prepareFailView(String errorMessage) {
         System.out.println("Failed to create quiz: " + errorMessage);
     }
+
+    @Override
+    public void switchToDashboardView() {
+        viewManagerModel.setState("logged in");
+        viewManagerModel.firePropertyChanged();
+    }
 }

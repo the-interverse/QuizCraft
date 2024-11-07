@@ -11,4 +11,7 @@ public interface CreateQuizInputBoundary {
      * @param CreateQuizInputData the input data
      */
     void execute(CreateQuizInputData CreateQuizInputData);
+
+    void switchToDashboardView();
+
 }

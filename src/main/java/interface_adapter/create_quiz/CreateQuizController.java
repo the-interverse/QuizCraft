@@ -16,4 +16,8 @@ public class CreateQuizController {
         CreateQuizInputData inputData = new CreateQuizInputData(quizName, numQuestions, difficulty, pdf);
         interactor.execute(inputData);
     }
+
+    public void switchToDashboardView() {
+        interactor.switchToDashboardView();
+    }
 }
