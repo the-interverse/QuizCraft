@@ -1,13 +1,17 @@
 package use_case.create_quiz;
 import entity.Quiz;
+import file_parser.PDFParser;
+
 import java.util.ArrayList;
 /**
  * The Login Interactor.
  */
 public class CreateQuizInteractor implements CreateQuizInputBoundary {
     private final CreateQuizOutputBoundary createQuizPresenter;
+    // private final PDFParser pdfParser;
 
     public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter) {
+       // this.pdfParser = pdfParser;
         this.createQuizPresenter = createQuizPresenter;
     }
 
