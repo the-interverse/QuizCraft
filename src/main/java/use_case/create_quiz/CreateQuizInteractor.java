@@ -8,10 +8,8 @@ import java.util.ArrayList;
  */
 public class CreateQuizInteractor implements CreateQuizInputBoundary {
     private final CreateQuizOutputBoundary createQuizPresenter;
-    // private final PDFParser pdfParser;
 
     public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter) {
-       // this.pdfParser = pdfParser;
         this.createQuizPresenter = createQuizPresenter;
     }
 
