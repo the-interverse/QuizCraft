@@ -12,7 +12,7 @@ import java.util.List;
 public class RetrieveQuiz {
 
     private static final String PROJECT_ID = "quizcraft-eb0a5";
-    private static final String API_KEY = "YOUR_API_KEY_HERE";
+    private static final String API_KEY = "AIzaSyA7152q13udjy3Z5mxNNH1BX7EkmE2GFCQ";
 
     public RetrieveQuiz() {}
 
