@@ -21,11 +21,23 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void prepareSuccessView(CreateQuizOutputData data) {
+        CreateQuizState state = createQuizViewModel.getState();
+        state.setQuizName(data.getQuiz().getName());
+        state.setDifficulty(data.getQuiz().getDifficulty());
+
         System.out.println("Quiz Created Successfully: " + data.getQuiz().getName());
+        createQuizViewModel.firePropertyChanged();
+
+        viewManagerModel.setState(loggedInViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
+
     }
 
     @Override
     public void prepareFailView(String errorMessage) {
+        CreateQuizState state = createQuizViewModel.getState();
+        state.setErrorMessage(errorMessage);
         System.out.println("Failed to create quiz: " + errorMessage);
+        createQuizViewModel.firePropertyChanged();
     }
 }

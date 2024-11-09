@@ -2,11 +2,11 @@ package use_case.create_quiz;
 import entity.Quiz;
 
 /**
- * Output Data for the Login Use Case.
+ * Output Data for the CreateQuiz Use Case.
  */
 public class CreateQuizOutputData {
 
-    private Quiz quiz;
+    private final Quiz quiz;
 
     public CreateQuizOutputData(Quiz quiz) {
         this.quiz = quiz;

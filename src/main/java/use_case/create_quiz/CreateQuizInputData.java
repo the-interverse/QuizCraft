@@ -5,13 +5,13 @@ public class CreateQuizInputData {
     private String quizName;
     private int numQuestions;
     private String difficulty;
-    private File pdf;
+    private String filepath;
 
-    public CreateQuizInputData(String quizName, int numQuestions, String difficulty, File pdf) {
+    public CreateQuizInputData(String quizName, int numQuestions, String difficulty, String filepath) {
         this.quizName = quizName;
         this.numQuestions = numQuestions;
         this.difficulty = difficulty;
-        this.pdf = pdf;
+        this.filepath = filepath;
     }
 
     public String getQuizName() {
@@ -26,7 +26,7 @@ public class CreateQuizInputData {
         return difficulty;
     }
 
-    public File getPdf() {
-        return pdf;
+    public String getFilepath() {
+        return filepath;
     }
 }

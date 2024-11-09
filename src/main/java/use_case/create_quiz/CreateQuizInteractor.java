@@ -1,5 +1,7 @@
 package use_case.create_quiz;
 import entity.Quiz;
+import file_parser.PDFParser;
+
 import java.util.ArrayList;
 /**
  * The Login Interactor.

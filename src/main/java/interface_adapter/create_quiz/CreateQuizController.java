@@ -1,19 +1,29 @@
 package interface_adapter.create_quiz;
 
+import file_parser.TextExtractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizInputData;
 
 import java.io.File;
+import java.io.IOException;
 
 public class CreateQuizController {
     private final CreateQuizInputBoundary interactor;
+    private file_parser.TextExtractor textExtractor;
 
     public CreateQuizController(CreateQuizInputBoundary interactor) {
         this.interactor = interactor;
     }
 
-    public void handleCreateQuiz(String quizName, int numQuestions, String difficulty, File pdf) {
-        CreateQuizInputData inputData = new CreateQuizInputData(quizName, numQuestions, difficulty, pdf);
-        interactor.execute(inputData);
+    public void handleCreateQuiz(String quizName, int numQuestions, String difficulty, String filePath) {
+        try {
+            String courseMaterial = textExtractor.extractText(filePath);
+            CreateQuizInputData inputData = new CreateQuizInputData(quizName, numQuestions, difficulty, courseMaterial);
+            interactor.execute(inputData);
+        } catch (IOException e) {
+            System.out.println("Parsing error: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Wrong file format: " + e.getMessage());
+        }
     }
 }
