@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import entity.Quiz;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +15,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import entity.UserFactory;
 import entity.User;
-import use_case.change_password.ChangePasswordUserDataAccessInterface;
+import use_case.create_quiz.CreateQuizDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -24,8 +25,8 @@ import use_case.signup.SignupUserDataAccessInterface;
  */
 public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
-        ChangePasswordUserDataAccessInterface,
-        LogoutUserDataAccessInterface {
+        LogoutUserDataAccessInterface,
+        CreateQuizDataAccessInterface {
     private static final int SUCCESS_CODE = 200;
     private static final int ERROR_CODE = 400;
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
@@ -129,38 +130,17 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     }
 
     @Override
-    public void changePassword(User user) {
-        final OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-
-        // POST METHOD
-        final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
-        final JSONObject requestBody = new JSONObject(String.format("{\"fields\": {\"password\": {\"stringValue\": \"%s\"}}}", user.getPassword()));
-        final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
-        final Request request = new Request.Builder()
-                .url(STORAGE_URL + PATH_TO_USERS + "?documentId=" + user.getUsername())
-                .method("PUT", body)
-                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
-                .build();
-        try {
-            final Response response = client.newCall(request).execute();
-
-            final JSONObject responseBody = new JSONObject(response.body().string());
-
-            if (responseBody.getInt(STATUS_CODE_LABEL) == SUCCESS_CODE) {
-                // success!
-            }
-            else {
-                throw new RuntimeException(responseBody.getString(MESSAGE));
-            }
-        }
-        catch (IOException | JSONException ex) {
-            throw new RuntimeException(ex);
-        }
+    public String getCurrentUsername() {
+        return null;
     }
 
     @Override
-    public String getCurrentUsername() {
-        return null;
+    public boolean quizExistsByName(String username, String quizName) {
+        return false;
+    }
+
+    @Override
+    public void saveQuiz(Quiz quiz) {
+
     }
 }
