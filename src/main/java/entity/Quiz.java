@@ -13,6 +13,11 @@ public class Quiz {
         this.difficulty = difficulty;
     }
 
+    public Quiz(String name, List<QuizQuestion> questions) {
+        this.name = name;
+        this.questions = questions;
+    }
+
     public String getName() {
         return name;
     }

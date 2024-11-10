@@ -4,29 +4,27 @@ import java.util.List;
 import java.util.Map;
 
 public class QuizQuestion {
-    private String questionText;
+    private String question;
     private List<String> answers;
-    private char correctAnswer;
+    private int correctIndex;
 
-    public QuizQuestion(String questionText, List<String> answers, char correctAnswer) {
-        this.questionText = questionText;
+    public QuizQuestion(String question, List<String> answers, int correctAnswer) {
+        this.question = question;
         this.answers = answers;
-        this.correctAnswer = correctAnswer;
+        this.correctIndex = correctIndex;
     }
 
-    public boolean isCorrect(String answer) {
-        return answer.equals(correctAnswer);
-    }
+    public boolean isCorrect(int index) { return index == correctIndex; }
 
-    public String getQuestionText() {
-        return questionText;
+    public String getQuestion() {
+        return question;
     }
 
     public List<String> getAnswers() {
         return answers;
     }
 
-    public char getCorrectAnswer() {
-        return correctAnswer;
+    public int getCorrectAnswer() {
+        return correctIndex;
     }
 }
