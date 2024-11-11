@@ -9,7 +9,6 @@ import javax.swing.WindowConstants;
 import data_access.InMemoryUserDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -39,6 +38,14 @@ import view.CreateQuizView;
 import use_case.create_quiz.CreateQuizInteractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizOutputBoundary;
+
+import use_case.dashboard.LoggedInInputBoundary;
+import use_case.dashboard.LoggedInInteractor;
+import use_case.dashboard.LoggedInOutputBoundary;
+import interface_adapter.dashboard.LoggedInViewModel;
+
+import interface_adapter.dashboard.LoggedInController;
+import interface_adapter.dashboard.LoggedInPresenter;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -125,6 +132,20 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addLoggedInUseCase() {
+
+        final LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,
+                loggedInViewModel);
+
+        final LoggedInInputBoundary loggedInInteractor =
+                new LoggedInInteractor(loggedInOutputBoundary);
+
+        final LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
+
+        loggedInView.setLoggedInController(loggedInController);
+        return this;
+    }
+
     /**
      * Adds the Login Use Case to the application.
      * @return this builder
@@ -184,7 +205,7 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(createQuizView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
+        viewManagerModel.setState(loggedInView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;

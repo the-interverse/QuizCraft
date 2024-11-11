@@ -23,4 +23,9 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         Quiz quiz = new Quiz(createQuizInputData.getQuizName(), new ArrayList<>(), createQuizInputData.getDifficulty());
         createQuizPresenter.prepareSuccessView(new CreateQuizOutputData(quiz));
     }
+
+    @Override
+    public void switchToDashboardView() {
+        createQuizPresenter.switchToDashboardView();
+    }
 }

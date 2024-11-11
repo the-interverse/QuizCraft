@@ -12,7 +12,6 @@ import java.util.Map;
 
 import entity.User;
 import entity.UserFactory;
-import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
@@ -20,8 +19,7 @@ import use_case.signup.SignupUserDataAccessInterface;
  * DAO for user data implemented using a File to persist the data.
  */
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
-                                                 LoginUserDataAccessInterface,
-                                                 ChangePasswordUserDataAccessInterface {
+                                                 LoginUserDataAccessInterface {
 
     private static final String HEADER = "username,password";
 
@@ -69,7 +67,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
 
             for (User user : accounts.values()) {
                 final String line = String.format("%s,%s",
-                        user.getName(), user.getPassword());
+                        user.getUsername(), user.getPassword());
                 writer.write(line);
                 writer.newLine();
             }
@@ -84,7 +82,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
 
     @Override
     public void save(User user) {
-        accounts.put(user.getName(), user);
+        accounts.put(user.getUsername(), user);
         this.save();
     }
 
@@ -106,12 +104,5 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
     @Override
     public boolean existsByName(String identifier) {
         return accounts.containsKey(identifier);
-    }
-
-    @Override
-    public void changePassword(User user) {
-        // Replace the User object in the map
-        accounts.put(user.getName(), user);
-        save();
     }
 }

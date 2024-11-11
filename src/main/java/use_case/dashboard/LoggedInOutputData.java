@@ -3,12 +3,12 @@ package use_case.dashboard;
 /**
  * Output Data for the Login Use Case.
  */
-public class DashboardOutputData {
+public class LoggedInOutputData {
 
     private final String username;
     private final boolean useCaseFailed;
 
-    public DashboardOutputData(String username, boolean useCaseFailed) {
+    public LoggedInOutputData(String username, boolean useCaseFailed) {
         this.username = username;
         this.useCaseFailed = useCaseFailed;
     }

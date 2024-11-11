@@ -1,6 +1,6 @@
 package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInViewModel;
+import interface_adapter.dashboard.LoggedInViewModel;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
 
@@ -39,5 +39,11 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
         state.setErrorMessage(errorMessage);
         System.out.println("Failed to create quiz: " + errorMessage);
         createQuizViewModel.firePropertyChanged();
+    }
+
+    @Override
+    public void switchToDashboardView() {
+        viewManagerModel.setState("logged in");
+        viewManagerModel.firePropertyChanged();
     }
 }

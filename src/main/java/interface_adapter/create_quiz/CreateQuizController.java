@@ -26,4 +26,8 @@ public class CreateQuizController {
             System.out.println("Wrong file format: " + e.getMessage());
         }
     }
+
+    public void switchToDashboardView() {
+        interactor.switchToDashboardView();
+    }
 }
