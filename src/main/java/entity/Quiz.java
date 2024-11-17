@@ -1,10 +1,15 @@
 package entity;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Quiz {
+    @SerializedName("Quiz Name")
     private String name;
+
+    @SerializedName("Quiz Questions")
     private List<QuizQuestion> questions;
+
     private String difficulty;
 
     public Quiz(String name, List<QuizQuestion> questions, String difficulty) {
