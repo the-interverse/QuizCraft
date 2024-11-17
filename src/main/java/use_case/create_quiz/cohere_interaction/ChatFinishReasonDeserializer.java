@@ -1,4 +1,4 @@
-package use_case.create_quiz;
+package use_case.create_quiz.cohere_interaction;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

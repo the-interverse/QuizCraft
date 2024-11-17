@@ -1,6 +1,5 @@
 package use_case.create_quiz;
 import entity.Quiz;
-import file_parser.PDFParser;
 
 import java.util.ArrayList;
 /**
@@ -15,9 +14,16 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
 
     @Override
     public void execute(CreateQuizInputData createQuizInputData) {
-        if (createQuizInputData.getQuizName() == null || createQuizInputData.getQuizName().isEmpty()) {
+        final String quizName = createQuizInputData.getQuizName();
+        final Integer numQuestions = createQuizInputData.getNumQuestions();
+        final String difficulty = createQuizInputData.getDifficulty();
+        final String filePath = createQuizInputData.getFilepath();
+        if (quizName == null || quizName.isEmpty()) {
             createQuizPresenter.prepareFailView("Quiz name cannot be empty.");
-            return;
+        if (numQuestions < 1) {
+            createQuizPresenter.prepareFailView("Number of questions cannot be less than 1.");
+        }
+
         }
 
         Quiz quiz = new Quiz(createQuizInputData.getQuizName(), new ArrayList<>(), createQuizInputData.getDifficulty());

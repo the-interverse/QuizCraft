@@ -1,15 +1,14 @@
 package interface_adapter.create_quiz;
 
-import file_parser.TextExtractor;
+import use_case.create_quiz.parsers.TextExtractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizInputData;
 
-import java.io.File;
 import java.io.IOException;
 
 public class CreateQuizController {
     private final CreateQuizInputBoundary interactor;
-    private file_parser.TextExtractor textExtractor;
+    private TextExtractor textExtractor;
 
     public CreateQuizController(CreateQuizInputBoundary interactor) {
         this.interactor = interactor;
