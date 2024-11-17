@@ -1,7 +1,8 @@
-package use_case.CohereClient;
+package use_case.createquiz;
 
 import entity.Quiz;
 import entity.QuizQuestion;
+import use_case.create_quiz.CohereAPI;
 
 public class CohereClientTest {
     public static void main(String[] args) {

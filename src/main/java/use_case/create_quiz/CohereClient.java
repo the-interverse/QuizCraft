@@ -1,4 +1,4 @@
-package use_case.CohereClient;
+package use_case.create_quiz;
 
 import com.cohere.api.Cohere;
 import com.cohere.api.resources.v2.requests.V2ChatRequest;
