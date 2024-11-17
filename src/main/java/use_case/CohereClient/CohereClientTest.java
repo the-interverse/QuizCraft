@@ -2,11 +2,6 @@ package use_case.CohereClient;
 
 import entity.Quiz;
 import entity.QuizQuestion;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 
 public class CohereClientTest {
     public static void main(String[] args) {
@@ -33,7 +28,7 @@ public class CohereClientTest {
 
         Quiz quiz = CohereAPI.parseQuiz(quizJSON, difficulty);
 
-        // Sample output of Quiz object contencts
+        // Sample output of Quiz object contents
         System.out.println("Quiz Name: " + quiz.getName());
         for (QuizQuestion question : quiz.getQuestions()) {
             System.out.println("Question: " + question.getQuestion());
