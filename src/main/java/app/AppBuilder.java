@@ -1,12 +1,15 @@
 package app;
 
 import java.awt.CardLayout;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import data_access.DBUserDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
+import entity.Quiz;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
@@ -17,6 +20,7 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.dashboard.DashboardDataAccessInterface;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -26,26 +30,23 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
-import view.LoggedInView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
+import view.*;
 
 import interface_adapter.create_quiz.CreateQuizController;
 import interface_adapter.create_quiz.CreateQuizPresenter;
 import interface_adapter.create_quiz.CreateQuizViewModel;
-import view.CreateQuizView;
 import use_case.create_quiz.CreateQuizInteractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 
-import use_case.dashboard.LoggedInInputBoundary;
-import use_case.dashboard.LoggedInInteractor;
-import use_case.dashboard.LoggedInOutputBoundary;
-import interface_adapter.dashboard.LoggedInViewModel;
+import use_case.dashboard.DashboardInputBoundary;
+import use_case.dashboard.DashboardInteractor;
+import use_case.dashboard.DashboardOutputBoundary;
+import interface_adapter.dashboard.DashboardViewModel;
 
-import interface_adapter.dashboard.LoggedInController;
-import interface_adapter.dashboard.LoggedInPresenter;
+import interface_adapter.dashboard.DashboardController;
+import interface_adapter.dashboard.DashboardPresenter;
+import interface_adapter.dashboard.DashboardViewModel;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -68,15 +69,12 @@ public class AppBuilder {
 
     // thought question: is the hard dependency below a problem?
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
-
     private SignupView signupView;
     private SignupViewModel signupViewModel;
     private LoginViewModel loginViewModel;
-    private LoggedInViewModel loggedInViewModel;
-    private LoggedInView loggedInView;
+    private DashboardViewModel loggedInViewModel;
+    private DashboardView loggedInView;
     private LoginView loginView;
-
-
     private CreateQuizViewModel createQuizViewModel;
     private CreateQuizView createQuizView;
 
@@ -111,8 +109,8 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLoggedInView() {
-        loggedInViewModel = new LoggedInViewModel();
-        loggedInView = new LoggedInView(loggedInViewModel);
+        loggedInViewModel = new DashboardViewModel();
+        loggedInView = new DashboardView(loggedInViewModel);
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
@@ -133,16 +131,22 @@ public class AppBuilder {
     }
 
     public AppBuilder addLoggedInUseCase() {
+        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, loggedInViewModel);
+        final DashboardDataAccessInterface dashboardRepository = new DashboardDataAccessInterface() {
+            @Override
+            public List<Quiz> getQuizzes() {
+                return List.of();
+            }
+        };
+        final DashboardInputBoundary dashboardInteractor = new DashboardInteractor(dashboardRepository, dashboardOutputBoundary);
 
-        final LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,
-                loggedInViewModel);
+        final DashboardController dashboardController = new DashboardController(dashboardInteractor, viewManagerModel);
 
-        final LoggedInInputBoundary loggedInInteractor =
-                new LoggedInInteractor(loggedInOutputBoundary);
+        final LogoutController logoutController = new LogoutController(new LogoutInteractor(userDataAccessObject, new LogoutPresenter(viewManagerModel, loggedInViewModel, loginViewModel)));
 
-        final LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
+        loggedInView.setDashboardController(dashboardController);
+        loggedInView.setLogoutController(logoutController);
 
-        loggedInView.setLoggedInController(loggedInController);
         return this;
     }
 

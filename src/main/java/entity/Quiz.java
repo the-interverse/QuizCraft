@@ -1,9 +1,11 @@
 package entity;
 
 import com.google.gson.annotations.SerializedName;
+import interface_adapter.dashboard.DashboardState;
+
 import java.util.List;
 
-public class Quiz {
+public class Quiz extends DashboardState.QuizDisplayData {
     @SerializedName("Quiz Name")
     private String name;
 
