@@ -118,13 +118,14 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == createButton) {
             final CreateQuizState currentState = viewModel.getState();
+            currentState.setDifficulty(getSelectedDifficulty());
             createQuizController.execute(
                     currentState.getQuizName(),
                     currentState.getQuestionAmount(),
                     currentState.getDifficulty(),
-                    currentState.getPdfFileName()
+                    currentState.getPdfFileName(),
+                    currentState.getUsername()
             );
-//            state.setDifficulty(getSelectedDifficulty());
 //            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
         } else if (evt.getSource() == cancelButton) {
             resetFields();

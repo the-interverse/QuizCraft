@@ -6,16 +6,7 @@ public class CreateQuizState {
     private String difficulty = "";
     private String pdfFileName = "No file selected";
     private String errorMessage;
-
-    public CreateQuizState(CreateQuizState copy) {
-        this.quizName = copy.quizName;
-        this.questionAmount = copy.questionAmount;
-        this.difficulty = copy.difficulty;
-        this.pdfFileName = copy.pdfFileName;
-        this.errorMessage = copy.errorMessage;
-    }
-
-    public CreateQuizState() {}
+    private String username;
 
     public String getQuizName() {
         return quizName;
@@ -55,5 +46,13 @@ public class CreateQuizState {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -1,17 +1,28 @@
 package use_case.create_quiz;
 import entity.Quiz;
+import entity.QuizQuestion;
+import org.jetbrains.annotations.NotNull;
 import use_case.create_quiz.parsers.TextExtractor;
 import use_case.create_quiz.cohere_interaction.CohereAPI;
+import use_case.login.LoginUserDataAccessInterface;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Login Interactor.
  */
 public class CreateQuizInteractor implements CreateQuizInputBoundary {
+    private final CreateQuizDataAccessInterface quizDataAccessObject;
     private final CreateQuizOutputBoundary createQuizPresenter;
 
-    public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter) {
+    public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter,
+                                CreateQuizDataAccessInterface quizDataAccessObject) {
         this.createQuizPresenter = createQuizPresenter;
+        this.quizDataAccessObject = quizDataAccessObject;
     }
 
     @Override
@@ -20,11 +31,15 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         final Integer numQuestions = createQuizInputData.getNumQuestions();
         final String difficulty = createQuizInputData.getDifficulty();
         final String filePath = createQuizInputData.getFilepath();
+        final String username = createQuizInputData.getUsername();
         if (quizName == null || quizName.isEmpty()) {
-            createQuizPresenter.prepareFailView("Quiz name cannot be empty.");
+            createQuizPresenter.prepareFailView("Quiz name cannot be empty. Please choose another name.");
         }
         if (numQuestions < 1) {
-            createQuizPresenter.prepareFailView("Number of questions cannot be less than 1.");
+            createQuizPresenter.prepareFailView("Number of questions cannot be less than 1. Please choose more questions");
+        }
+        if (quizDataAccessObject.quizExistsByName(username, quizName)) {
+            createQuizPresenter.prepareFailView("Quiz with this name already exists. Please choose another name");
         }
         try {
             String courseMaterial = TextExtractor.extractText(filePath);
@@ -33,15 +48,38 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
             String quizJSON = "";
             try {
                 quizJSON = cohereAPI.callAPI(prompt);
+                Quiz quiz = CohereAPI.parseQuiz(quizJSON, difficulty);
+                if (quiz == null) {
+                    createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
+                }
+                quizDataAccessObject.saveQuiz(quiz);
+                assert quiz != null;
+                final List<Map<String, Map<Integer, String>>> questions = getQuestions(quiz);
+                final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
+                createQuizPresenter.prepareSuccessView(createQuizOutputData);
             } catch (Exception e) {
                 createQuizPresenter.prepareFailView(e.getMessage());
             }
-            Quiz quiz = CohereAPI.parseQuiz(quizJSON, difficulty);
         } catch (IOException e) {
             createQuizPresenter.prepareFailView("Parsing error: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             createQuizPresenter.prepareFailView("Wrong file format: " + e.getMessage());
         }
+    }
+
+    @NotNull
+    private static List<Map<String, Map<Integer, String>>> getQuestions(Quiz quiz) {
+        final List<Map<String, Map<Integer, String>>> questions = new ArrayList<>();
+        for (QuizQuestion question : quiz.getQuestions()){
+            Map answers = new HashMap<>();
+            for (Integer i = 0; i < question.getAnswers().size(); i++){
+                answers.put(i, question.getAnswers().get(i));
+            }
+            Map questionAndAnswers = new HashMap<>();
+            questionAndAnswers.put(question.getQuestion(), answers);
+            questions.add(questionAndAnswers);
+        }
+        return questions;
     }
 
     @Override

@@ -12,8 +12,8 @@ public class CreateQuizController {
         this.createQuizInteractor = interactor;
     }
 
-    public void execute(String quizName, int numQuestions, String difficulty, String filePath) {
-        CreateQuizInputData inputData = new CreateQuizInputData(quizName, numQuestions, difficulty, filePath);
+    public void execute(String quizName, int numQuestions, String difficulty, String filePath, String username) {
+        CreateQuizInputData inputData = new CreateQuizInputData(quizName, numQuestions, difficulty, filePath, username);
         createQuizInteractor.execute(inputData);
     }
 
