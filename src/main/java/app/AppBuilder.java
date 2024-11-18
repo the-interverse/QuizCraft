@@ -18,6 +18,7 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -74,6 +75,7 @@ public class AppBuilder {
     private SignupViewModel signupViewModel;
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
+    private ViewQuizViewModel viewQuizViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
 
@@ -187,7 +189,7 @@ public class AppBuilder {
 
     public AppBuilder addCreateQuizUseCase() {
         final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
-                loggedInViewModel, createQuizViewModel);
+                viewQuizViewModel, createQuizViewModel);
         final CreateQuizInputBoundary createQuizInteractor =
                 new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject);
 

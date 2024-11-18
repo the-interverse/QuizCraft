@@ -1,18 +1,19 @@
 package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.dashboard.LoggedInViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
 import view.ViewQuizView;
 
 public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
-    private ViewQuizView viewQuizViewModel;
+    private ViewQuizViewModel viewQuizViewModel;
     private ViewManagerModel viewManagerModel;
     private CreateQuizViewModel createQuizViewModel;
 
     public CreateQuizPresenter(ViewManagerModel viewManagerModel,
-                               ViewQuizView viewQuizViewModel,
+                               ViewQuizViewModel viewQuizViewModel,
                            CreateQuizViewModel createQuizViewModel) {
         this.viewQuizViewModel = viewQuizViewModel;
         this.viewManagerModel = viewManagerModel;
