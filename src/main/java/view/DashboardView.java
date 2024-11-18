@@ -60,9 +60,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
         createQuizButton = new JButton("Create Quiz");
         createQuizButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         createQuizButton.addActionListener(evt -> {
-            if (dashboardController != null) {
-                dashboardController.switchToCreateQuizView();
-            }
+            dashboardController.switchToCreateQuizView();
         });
 
         userPanel.add(usernameLabel);

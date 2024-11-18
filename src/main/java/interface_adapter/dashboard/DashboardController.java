@@ -21,8 +21,7 @@ public class DashboardController {
         dashboardInteractor.execute(dashboardInputData);
     }
     public void switchToCreateQuizView() {
-        viewManagerModel.setState("createQuiz");
-        viewManagerModel.firePropertyChanged();
+        dashboardInteractor.switchToCreateQuizView();
     }
 }
 

@@ -36,5 +36,10 @@ public class DashboardPresenter implements DashboardOutputBoundary {
         dashboardViewModel.setState(state);
         dashboardViewModel.firePropertyChanged();
     }
+    @Override
+    public void switchToCreateQuizView() {
+        viewManagerModel.setState(dashboardViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
+    }
 }
 
