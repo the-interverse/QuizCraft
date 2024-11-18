@@ -80,7 +80,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
             public void changedUpdate(DocumentEvent e) { updateQuestionAmount(); }
             private void updateQuestionAmount() {
                 CreateQuizState state = viewModel.getState();
-                state.setQuestionAmount(questionAmountField.getText());
+                state.setQuestionAmount(Integer.parseInt(questionAmountField.getText()));
                 viewModel.setState(state);
             }
         });
@@ -109,7 +109,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
             File selectedPDF = fileChooser.getSelectedFile();
             pdfLabel.setText(selectedPDF.getName());
             CreateQuizState state = viewModel.getState();
-            state.setPdfFileName(selectedPDF.getName());
+            state.setPdfFileName(selectedPDF.getAbsolutePath());
             viewModel.setState(state);
         }
     }
@@ -117,9 +117,15 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == createButton) {
-            CreateQuizState state = viewModel.getState();
-            state.setDifficulty(getSelectedDifficulty());
-            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
+            final CreateQuizState currentState = viewModel.getState();
+            createQuizController.execute(
+                    currentState.getQuizName(),
+                    currentState.getQuestionAmount(),
+                    currentState.getDifficulty(),
+                    currentState.getPdfFileName()
+            );
+//            state.setDifficulty(getSelectedDifficulty());
+//            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
         } else if (evt.getSource() == cancelButton) {
             resetFields();
             createQuizController.switchToDashboardView();
@@ -133,7 +139,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
         pdfLabel.setText("No file selected");
         CreateQuizState state = viewModel.getState();
         state.setQuizName("");
-        state.setQuestionAmount("");
+        state.setQuestionAmount(0);
         state.setDifficulty("");
         state.setPdfFileName("No file selected");
         viewModel.setState(state);
@@ -153,7 +159,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     public void propertyChange(PropertyChangeEvent evt) {
         CreateQuizState state = (CreateQuizState) evt.getNewValue();
         quizNameField.setText(state.getQuizName());
-        questionAmountField.setText(state.getQuestionAmount());
+        questionAmountField.setText(String.valueOf(state.getQuestionAmount()));
         pdfLabel.setText(state.getPdfFileName());
     }
 

@@ -16,12 +16,8 @@ import java.util.Map;
 public class CohereAPI {
     private final Cohere cohere;
 
-    // constructor for CohereAPI
-    public CohereAPI(String apiKey) {
-        this.cohere = Cohere.builder()
-                .token(apiKey)
-                .clientName("quiz-client")
-                .build();
+    public CohereAPI() {
+        this.cohere = Cohere.builder().token("qmuC2WGV8FT5vbujGoQW7CV9W6p0ud0JyxTf7epa").clientName("quiz-client").build();
     }
 
     // generates prompt based on input

@@ -2,7 +2,7 @@ package interface_adapter.create_quiz;
 
 public class CreateQuizState {
     private String quizName = "";
-    private String questionAmount = "";
+    private int questionAmount = 0;
     private String difficulty = "";
     private String pdfFileName = "No file selected";
     private String errorMessage;
@@ -25,11 +25,11 @@ public class CreateQuizState {
         this.quizName = quizName;
     }
 
-    public String getQuestionAmount() {
+    public int getQuestionAmount() {
         return questionAmount;
     }
 
-    public void setQuestionAmount(String questionAmount) {
+    public void setQuestionAmount(int questionAmount) {
         this.questionAmount = questionAmount;
     }
 
