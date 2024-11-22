@@ -1,4 +1,4 @@
-package use_case.create_quiz.cohere_interaction;
+package ai_access;
 
 import com.cohere.api.Cohere;
 import com.cohere.api.resources.v2.requests.V2ChatRequest;
@@ -141,7 +141,7 @@ public class CohereClient {
             JSONObject questionJson = new JSONObject();
             questionJson.put("question", question.getQuestion());
             questionJson.put("answers", new JSONArray(question.getAnswers()));
-            questionJson.put("correctAnswer", question.getCorrectAnswer());
+            questionJson.put("correctAnswer", question.getCorrectIndex());
             questionsArray.put(questionJson);
         }
 

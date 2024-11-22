@@ -6,8 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import ai_access.CohereAPI;
 import data_access.DBUserDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
+import entity.QuizFactory;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
@@ -65,11 +67,13 @@ public class AppBuilder {
     private final CardLayout cardLayout = new CardLayout();
     // thought question: is the hard dependency below a problem?
     private final UserFactory userFactory = new UserFactory();
+    private final QuizFactory quizFactory = new QuizFactory();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     // thought question: is the hard dependency below a problem?
     private final DBUserDataAccessObject programDataAccessObject = new DBUserDataAccessObject(new UserFactory());
+    private final CohereAPI aiAccessObject = new CohereAPI();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
@@ -191,7 +195,7 @@ public class AppBuilder {
         final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
                 viewQuizViewModel, createQuizViewModel);
         final CreateQuizInputBoundary createQuizInteractor =
-                new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject);
+                new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject, quizFactory, aiAccessObject);
 
         final CreateQuizController createQuizController = new CreateQuizController(createQuizInteractor);
         createQuizView.setCreateQuizController(createQuizController);

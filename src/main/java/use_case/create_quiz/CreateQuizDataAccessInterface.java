@@ -17,7 +17,9 @@ public interface CreateQuizDataAccessInterface {
 
     /**
      * Saves the quiz.
+     *
      * @param quiz the quiz to save in data access
+     * @param username username of the user who created the quiz
      */
-    void saveQuiz(Quiz quiz);
+    void saveQuiz(Quiz quiz, String username);
 }

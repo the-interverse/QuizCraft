@@ -1,10 +1,11 @@
 package use_case.create_quiz;
+import ai_access.AIAccessInterface;
 import entity.Quiz;
+import entity.QuizFactory;
 import entity.QuizQuestion;
 import org.jetbrains.annotations.NotNull;
 import use_case.create_quiz.parsers.TextExtractor;
-import use_case.create_quiz.cohere_interaction.CohereAPI;
-import use_case.login.LoginUserDataAccessInterface;
+import ai_access.CohereAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,11 +19,17 @@ import java.util.Map;
 public class CreateQuizInteractor implements CreateQuizInputBoundary {
     private final CreateQuizDataAccessInterface quizDataAccessObject;
     private final CreateQuizOutputBoundary createQuizPresenter;
+    private final QuizFactory quizFactory;
+    private final AIAccessInterface cohereAPI;
 
     public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter,
-                                CreateQuizDataAccessInterface quizDataAccessObject) {
+                                CreateQuizDataAccessInterface quizDataAccessObject,
+                                QuizFactory quizFactory,
+                                AIAccessInterface aiAccesObject) {
         this.createQuizPresenter = createQuizPresenter;
         this.quizDataAccessObject = quizDataAccessObject;
+        this.quizFactory = quizFactory;
+        this.cohereAPI = aiAccesObject;
     }
 
     @Override
@@ -31,28 +38,30 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         final Integer numQuestions = createQuizInputData.getNumQuestions();
         final String difficulty = createQuizInputData.getDifficulty();
         final String filePath = createQuizInputData.getFilepath();
-        final String username = createQuizInputData.getUsername();
+//        final String username = createQuizInputData.getUsername();
+        final String username = "kirill";
         if (quizName == null || quizName.isEmpty()) {
             createQuizPresenter.prepareFailView("Quiz name cannot be empty. Please choose another name.");
         }
         if (numQuestions < 1) {
             createQuizPresenter.prepareFailView("Number of questions cannot be less than 1. Please choose more questions");
+        } else if (numQuestions > 5) {
+            createQuizPresenter.prepareFailView("Number of questions cannot be more than 5. Please choose less questions");
         }
+
         if (quizDataAccessObject.quizExistsByName(username, quizName)) {
             createQuizPresenter.prepareFailView("Quiz with this name already exists. Please choose another name");
         }
         try {
             String courseMaterial = TextExtractor.extractText(filePath);
-            final CohereAPI cohereAPI = new CohereAPI();
-            String prompt = cohereAPI.createPrompt(courseMaterial, quizName, numQuestions, difficulty);
             String quizJSON = "";
             try {
-                quizJSON = cohereAPI.callAPI(prompt);
-                Quiz quiz = CohereAPI.parseQuiz(quizJSON, difficulty);
+                quizJSON = cohereAPI.callAPI(courseMaterial, quizName, numQuestions, difficulty);
+                Quiz quiz = quizFactory.create(quizJSON, difficulty);
                 if (quiz == null) {
                     createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
                 }
-                quizDataAccessObject.saveQuiz(quiz);
+                quizDataAccessObject.saveQuiz(quiz, username);
                 assert quiz != null;
                 final List<Map<String, Map<Integer, String>>> questions = getQuestions(quiz);
                 final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);

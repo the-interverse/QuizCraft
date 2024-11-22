@@ -1,9 +1,14 @@
-package use_case.create_quiz.cohere_interaction;
+package ai_access;
 
+import data_access.DBUserDataAccessObject;
 import entity.Quiz;
+import entity.QuizFactory;
 import entity.QuizQuestion;
+import entity.UserFactory;
 
 public class CohereClientTest {
+    private final static QuizFactory quizFactory = new QuizFactory();
+    private final static DBUserDataAccessObject dataAccess = new DBUserDataAccessObject(new UserFactory());
     public static void main(String[] args) {
         // Example Prompt Material
         String courseMaterial = "ACT A: forecasting the future population of\n" +
@@ -54,16 +59,14 @@ public class CohereClientTest {
                 "2Новости, Р. И. А. 2021\n" +
                 "2\n";
         String quizTitle = "Earth Quiz";
-        int numQuestions = 15;
+        int numQuestions = 2;
         String difficulty = "easy";
         CohereAPI cohereAPI = new CohereAPI();
-
-        String prompt = cohereAPI.createPrompt(courseMaterial, quizTitle, numQuestions, difficulty);
-
+        String username = "kirill";
         String quizJSON = "";
 
         try {
-            quizJSON = cohereAPI.callAPI(prompt);
+            quizJSON = cohereAPI.callAPI(courseMaterial, quizTitle, numQuestions, difficulty);
             System.out.println("Generated Quiz JSON:");
             System.out.println(quizJSON);
         } catch (Exception e) {
@@ -71,14 +74,16 @@ public class CohereClientTest {
             e.printStackTrace();
         }
 
-        Quiz quiz = CohereAPI.parseQuiz(quizJSON, difficulty);
+        Quiz quiz = quizFactory.create(quizJSON, difficulty);
+        dataAccess.saveQuiz(quiz, username);
+
 
         // Sample output of Quiz object contents
         System.out.println("Quiz Name: " + quiz.getName());
         for (QuizQuestion question : quiz.getQuestions()) {
             System.out.println("Question: " + question.getQuestion());
             System.out.println("Answers: " + question.getAnswers());
-            System.out.println("Correct Index: " + question.getCorrectAnswer());
+            System.out.println("Correct Index: " + question.getCorrectIndex());
         }
         System.out.println("Difficulty: " + quiz.getDifficulty());
     }

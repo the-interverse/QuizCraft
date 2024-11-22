@@ -33,7 +33,6 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 //
 //        viewManagerModel.setState(loggedInViewModel.getViewName());
 //        viewManagerModel.firePropertyChanged();
-
     }
 
     @Override
