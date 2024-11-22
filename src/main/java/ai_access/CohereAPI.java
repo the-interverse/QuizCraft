@@ -1,38 +1,32 @@
-package use_case.CohereClient;
+package ai_access;
 
 import com.cohere.api.Cohere;
 import com.cohere.api.requests.ChatRequest;
 import com.cohere.api.types.*;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import entity.Quiz;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class CohereAPI {
+public class CohereAPI implements AIAccessInterface {
     private final Cohere cohere;
 
-    // constructor for CohereAPI
-    public CohereAPI(String apiKey) {
-        this.cohere = Cohere.builder()
-                .token(apiKey)
-                .clientName("quiz-client")
-                .build();
+    public CohereAPI() {
+        this.cohere = Cohere.builder().token("qmuC2WGV8FT5vbujGoQW7CV9W6p0ud0JyxTf7epa").clientName("quiz-client").build();
     }
 
     // generates prompt based on input
-    public String createPrompt(String courseMaterial, String quizTitle, int numQuestions, String difficulty) {
+    private String createPrompt(String courseMaterial, String quizTitle, int numQuestions, String difficulty) {
         return String.format("Generate JSON %s quiz titled '%s' with %d multiple-choice questions based on the " +
                 "following course material. Each question should have 4 options numbered 1 - 4 with the" +
                 "correct option stored in the answer \n%s", difficulty, quizTitle, numQuestions, courseMaterial);
     }
 
     // generates JSON format to follow
-    public Map<String, Object> createQuizSchema() {
+    private Map<String, Object> createQuizSchema() {
         String jsonSchema = "{\n" +
                 "  \"title\": \"Quiz\",\n" +
                 "  \"type\": \"object\",\n" +
@@ -71,7 +65,7 @@ public class CohereAPI {
     }
 
     // makes the call to CohereAPI and returns a String in JSON format
-    public String callAPI(String prompt) throws IOException, JSONException {
+    private String callAPI(String prompt) throws IOException, JSONException {
         Map<String, Object> schema = createQuizSchema();
         JsonResponseFormat jsonFormat = JsonResponseFormat.builder().schema(schema).build();
 
@@ -84,14 +78,9 @@ public class CohereAPI {
         return response.getText();
     }
 
-    private static final Gson gson = new Gson();
-    public static Quiz parseQuiz(String json, String difficulty) {
-        try {
-            Quiz quiz = gson.fromJson(json, Quiz.class);
-            return new Quiz(quiz.getName(), quiz.getQuestions(), difficulty); // sets the difficulty field
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public String callAPI(String courseMaterial, String quizName, Integer numQuestions, String difficulty) throws IOException {
+       String prompt = createPrompt(courseMaterial, quizName, numQuestions, difficulty);
+       return callAPI(prompt);
     }
 }

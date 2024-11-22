@@ -6,12 +6,14 @@ public class CreateQuizInputData {
     private int numQuestions;
     private String difficulty;
     private String filepath;
+    private String username;
 
-    public CreateQuizInputData(String quizName, int numQuestions, String difficulty, String filepath) {
+    public CreateQuizInputData(String quizName, int numQuestions, String difficulty, String filepath, String username) {
         this.quizName = quizName;
         this.numQuestions = numQuestions;
         this.difficulty = difficulty;
         this.filepath = filepath;
+        this.username = username;
     }
 
     public String getQuizName() {
@@ -29,4 +31,6 @@ public class CreateQuizInputData {
     public String getFilepath() {
         return filepath;
     }
+
+    public String getUsername() { return username; }
 }

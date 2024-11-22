@@ -1,4 +1,4 @@
-package use_case.CohereClient;
+package ai_access;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

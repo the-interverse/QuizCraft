@@ -1,7 +1,6 @@
 package entity;
 
 import java.util.List;
-import java.util.Map;
 
 public class QuizQuestion {
     private final String question;
@@ -24,7 +23,7 @@ public class QuizQuestion {
         return answers;
     }
 
-    public int getCorrectAnswer() {
+    public int getCorrectIndex() {
         return correctIndex;
     }
 }

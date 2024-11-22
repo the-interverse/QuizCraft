@@ -6,7 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import ai_access.CohereAPI;
+import data_access.DBUserDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
+import entity.QuizFactory;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
@@ -17,6 +20,7 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -63,16 +67,19 @@ public class AppBuilder {
     private final CardLayout cardLayout = new CardLayout();
     // thought question: is the hard dependency below a problem?
     private final UserFactory userFactory = new UserFactory();
+    private final QuizFactory quizFactory = new QuizFactory();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     // thought question: is the hard dependency below a problem?
-    private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
+    private final DBUserDataAccessObject programDataAccessObject = new DBUserDataAccessObject(new UserFactory());
+    private final CohereAPI aiAccessObject = new CohereAPI();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
+    private ViewQuizViewModel viewQuizViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
 
@@ -125,7 +132,7 @@ public class AppBuilder {
         final SignupOutputBoundary signupOutputBoundary = new SignupPresenter(viewManagerModel,
                 signupViewModel, loginViewModel);
         final SignupInputBoundary userSignupInteractor = new SignupInteractor(
-                userDataAccessObject, signupOutputBoundary, userFactory);
+                programDataAccessObject, signupOutputBoundary, userFactory);
 
         final SignupController controller = new SignupController(userSignupInteractor);
         signupView.setSignupController(controller);
@@ -154,7 +161,7 @@ public class AppBuilder {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
                 loggedInViewModel, loginViewModel);
         final LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary);
+                programDataAccessObject, loginOutputBoundary);
 
         final LoginController loginController = new LoginController(loginInteractor);
         loginView.setLoginController(loginController);
@@ -170,7 +177,7 @@ public class AppBuilder {
                 loggedInViewModel, loginViewModel);
 
         final LogoutInputBoundary logoutInteractor =
-                new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
+                new LogoutInteractor(programDataAccessObject, logoutOutputBoundary);
 
         final LogoutController logoutController = new LogoutController(logoutInteractor);
         loggedInView.setLogoutController(logoutController);
@@ -186,9 +193,9 @@ public class AppBuilder {
 
     public AppBuilder addCreateQuizUseCase() {
         final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
-                loggedInViewModel, createQuizViewModel);
+                viewQuizViewModel, createQuizViewModel);
         final CreateQuizInputBoundary createQuizInteractor =
-                new CreateQuizInteractor(createQuizOutputBoundary);
+                new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject, quizFactory, aiAccessObject);
 
         final CreateQuizController createQuizController = new CreateQuizController(createQuizInteractor);
         createQuizView.setCreateQuizController(createQuizController);

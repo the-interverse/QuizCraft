@@ -2,20 +2,11 @@ package interface_adapter.create_quiz;
 
 public class CreateQuizState {
     private String quizName = "";
-    private String questionAmount = "";
+    private int questionAmount = 0;
     private String difficulty = "";
     private String pdfFileName = "No file selected";
     private String errorMessage;
-
-    public CreateQuizState(CreateQuizState copy) {
-        this.quizName = copy.quizName;
-        this.questionAmount = copy.questionAmount;
-        this.difficulty = copy.difficulty;
-        this.pdfFileName = copy.pdfFileName;
-        this.errorMessage = copy.errorMessage;
-    }
-
-    public CreateQuizState() {}
+    private String username;
 
     public String getQuizName() {
         return quizName;
@@ -25,11 +16,11 @@ public class CreateQuizState {
         this.quizName = quizName;
     }
 
-    public String getQuestionAmount() {
+    public int getQuestionAmount() {
         return questionAmount;
     }
 
-    public void setQuestionAmount(String questionAmount) {
+    public void setQuestionAmount(int questionAmount) {
         this.questionAmount = questionAmount;
     }
 
@@ -55,5 +46,13 @@ public class CreateQuizState {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
