@@ -1,4 +1,52 @@
 package interface_adapter.view_quiz;
 
-public class ViewQuizPresenter {
+import interface_adapter.ViewManagerModel;
+import interface_adapter.view_quiz.ViewQuizState;
+import interface_adapter.view_quiz.ViewQuizViewModel;
+import interface_adapter.dashboard.LoggedInViewModel;
+import use_case.view_quiz.ViewQuizOutputBoundary;
+import use_case.view_quiz.ViewQuizOutputData;
+
+public class ViewQuizPresenter implements ViewQuizOutputBoundary {
+
+    private LoggedInViewModel loggedInViewModel;
+    private ViewManagerModel viewManagerModel;
+    private ViewQuizViewModel viewQuizViewModel;
+
+    public ViewQuizPresenter(ViewManagerModel viewManagerModel,
+                               LoggedInViewModel loggedInViewModel,
+                               ViewQuizViewModel viewQuizViewModel) {
+        this.loggedInViewModel = loggedInViewModel;
+        this.viewManagerModel = viewManagerModel;
+        this.viewQuizViewModel = viewQuizViewModel;
+    }
+
+
+    @Override
+    public void prepareSuccessView(ViewQuizOutputData data) {
+        ViewQuizState state = viewQuizViewModel.getState();
+        state.setQuizName(data.getQuizName());
+        state.setQuizQuestionsAndOptions(data.getQuestionsAndOptions());
+
+        System.out.println("Quiz view Successful: " + data.getQuizName());
+        viewQuizViewModel.firePropertyChanged();
+
+       // viewManagerModel.setState(loggedInViewModel.getViewName());
+       // viewManagerModel.firePropertyChanged();
+
+    }
+
+    @Override
+    public void prepareFailView(String errorMessage) {
+        ViewQuizState state = viewQuizViewModel.getState();
+        state.setErrorMessage(errorMessage);
+        System.out.println("Failed to view quiz: " + errorMessage);
+        viewQuizViewModel.firePropertyChanged();
+    }
+
+    @Override
+    public void switchToDashboardView() {
+        viewManagerModel.setState("logged in");
+        viewManagerModel.firePropertyChanged();
+    }
 }
