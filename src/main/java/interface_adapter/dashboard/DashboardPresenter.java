@@ -1,45 +1,51 @@
-package interface_adapter.dashboard;
-
+package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
-import entity.Quiz;
-import use_case.dashboard.DashboardOutputBoundary;
-import use_case.dashboard.DashboardOutputData;
+import interface_adapter.dashboard.LoggedInViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
+import use_case.create_quiz.CreateQuizOutputBoundary;
+import use_case.create_quiz.CreateQuizOutputData;
+import view.ViewQuizView;
 
-import java.util.List;
+public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
-/**
- * The Presenter for the Dashboard Use Case.
- */
-public class DashboardPresenter implements DashboardOutputBoundary {
+    private ViewQuizViewModel viewQuizViewModel;
+    private ViewManagerModel viewManagerModel;
+    private CreateQuizViewModel createQuizViewModel;
 
-    private final DashboardViewModel dashboardViewModel;
-    private final ViewManagerModel viewManagerModel;
-
-    public DashboardPresenter(ViewManagerModel viewManagerModel, DashboardViewModel dashboardViewModel) {
+    public CreateQuizPresenter(ViewManagerModel viewManagerModel,
+                               ViewQuizViewModel viewQuizViewModel,
+                               CreateQuizViewModel createQuizViewModel) {
+        this.viewQuizViewModel = viewQuizViewModel;
         this.viewManagerModel = viewManagerModel;
-        this.dashboardViewModel = dashboardViewModel;
+        this.createQuizViewModel = createQuizViewModel;
     }
 
+
     @Override
-    public void prepareSuccessView(DashboardOutputData outputData) {
-        List<Quiz> quizzes = outputData.getQuizzes();
-        DashboardState state = dashboardViewModel.getState();
-        state.setQuizzes(quizzes);
-        dashboardViewModel.setState(state);
-        dashboardViewModel.firePropertyChanged();
+    public void prepareSuccessView(CreateQuizOutputData data) {
+//        On success, switch to ViewQuiz view
+//        CreateQuizState state = createQuizViewModel.getState();
+//        state.setQuizName(data.getQuizName());
+//        state.setDifficulty(data.getQuiz().getDifficulty());
+
+        System.out.println("Quiz Created Successfully: " + data.getQuizName());
+//        createQuizViewModel.firePropertyChanged();
+//
+//        viewManagerModel.setState(loggedInViewModel.getViewName());
+//        viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void prepareFailView(String errorMessage) {
-        DashboardState state = dashboardViewModel.getState();
+        CreateQuizState state = createQuizViewModel.getState();
         state.setErrorMessage(errorMessage);
-        dashboardViewModel.setState(state);
-        dashboardViewModel.firePropertyChanged();
+        System.out.println("Failed to create quiz: " + errorMessage);
+        createQuizViewModel.firePropertyChanged();
     }
+
     @Override
-    public void switchToCreateQuizView() {
-        viewManagerModel.setState(dashboardViewModel.getViewName());
+    public void switchToDashboardView() {
+        viewManagerModel.setState("logged in");
         viewManagerModel.firePropertyChanged();
     }
 }
-
