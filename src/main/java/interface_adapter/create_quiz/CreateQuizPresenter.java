@@ -1,19 +1,21 @@
 package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.dashboard.DashboardViewModel;
+import interface_adapter.dashboard.LoggedInViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
+import view.ViewQuizView;
 
 public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
-    private DashboardViewModel loggedInViewModel;
+    private ViewQuizViewModel viewQuizViewModel;
     private ViewManagerModel viewManagerModel;
     private CreateQuizViewModel createQuizViewModel;
 
     public CreateQuizPresenter(ViewManagerModel viewManagerModel,
-                           DashboardViewModel loggedInViewModel,
-                           CreateQuizViewModel createQuizViewModel) {
-        this.loggedInViewModel = loggedInViewModel;
+                               ViewQuizViewModel viewQuizViewModel,
+                               CreateQuizViewModel createQuizViewModel) {
+        this.viewQuizViewModel = viewQuizViewModel;
         this.viewManagerModel = viewManagerModel;
         this.createQuizViewModel = createQuizViewModel;
     }
@@ -21,16 +23,16 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void prepareSuccessView(CreateQuizOutputData data) {
-        CreateQuizState state = createQuizViewModel.getState();
-        state.setQuizName(data.getQuiz().getName());
-        state.setDifficulty(data.getQuiz().getDifficulty());
+//        On success, switch to ViewQuiz view
+//        CreateQuizState state = createQuizViewModel.getState();
+//        state.setQuizName(data.getQuizName());
+//        state.setDifficulty(data.getQuiz().getDifficulty());
 
-        System.out.println("Quiz Created Successfully: " + data.getQuiz().getName());
-        createQuizViewModel.firePropertyChanged();
-
-        viewManagerModel.setState(loggedInViewModel.getViewName());
-        viewManagerModel.firePropertyChanged();
-
+        System.out.println("Quiz Created Successfully: " + data.getQuizName());
+//        createQuizViewModel.firePropertyChanged();
+//
+//        viewManagerModel.setState(loggedInViewModel.getViewName());
+//        viewManagerModel.firePropertyChanged();
     }
 
     @Override
