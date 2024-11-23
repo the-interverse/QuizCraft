@@ -1,4 +1,4 @@
-package file_parser;
+package use_case.create_quiz.parsers;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;

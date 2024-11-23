@@ -1,26 +1,33 @@
-package use_case.CohereClient;
+package ai_access;
+
+import com.cohere.api.Cohere;
+import com.cohere.api.resources.v2.requests.V2ChatRequest;
+import com.cohere.api.types.*;
 
 import entity.Quiz;
 import entity.QuizQuestion;
 
-// HTTP client handles HTTP communication
-import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CohereClient {
-    private static final String API_URL = "https://api.cohere.ai/v1/generate";
-    private final String apiKey;
-    private final OkHttpClient client;
+    private final Cohere cohere;
 
     public CohereClient(String apiKey) {
-        this.apiKey = apiKey;
-        this.client = new OkHttpClient();
+
+        this.cohere = Cohere.builder()
+                .token(apiKey)
+                .clientName("QuizCraft")
+                .build();
+
     }
 
     // Example Call:
@@ -28,11 +35,31 @@ public class CohereClient {
         // JSONObject quizJson = client.generateQuizJson("The very long string of course material", "Quiz Title", 5, "medium", 1000);
         // System.out.println(quizJson.toString(2)); // *Pretty* print the JSON :)
 
-    public Quiz generateQuestions(String prompt, int maxTokens, String quizTitle) throws IOException, JSONException {
-        String apiResponse = sendApiRequest(prompt, maxTokens);
-        return processApiResponse(apiResponse, quizTitle);
+    // calls the API
+    public Quiz generateQuestions(String prompt, int maxTokens, String quizTitle) throws IOException, JSONException, ParseException {
+        ChatResponse response = cohere.v2()
+                .chat(V2ChatRequest.builder()
+                        .model("command-r-plus")
+                        .messages(List.of(ChatMessageV2.user(
+                                UserMessage.builder()
+                                        .content(UserMessageContent.of(prompt))
+                                        .build())))
+                        .maxTokens(maxTokens)
+                        .build());
+
+
+
+        JSONObject object = (JSONObject) new JSONParser().parse(String.valueOf(response));
+        JSONArray message = (JSONArray) object.get("message");
+        JSONObject message0 = (JSONObject) message.get(0);
+        JSONArray content = (JSONArray) message0.get("content");
+        JSONObject content0 = (JSONObject) content.get(0);
+
+        String responseText = content0.get("text").toString();
+        return processApiResponse(responseText, quizTitle);
     }
-    
+
+    /*
     // method sends a request to Cohere API to generate questions based on the given prompt and the max
     // number of tokens. It constructs a JSON request body, sends the HTTP request and returns the
     // response as a string
@@ -62,10 +89,12 @@ public class CohereClient {
 
         // makes the request to the Cohere API and returns a response object containing the server's reply
         try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            if (!r esponse.isSuccessful()) throw new IOException("Unexpected code " + response);
             return response.body().string();                                      // extracts the body of the response and returns it as a string
         }
     }
+
+    */
 
     public String createPrompt(String courseMaterial, String quizTitle, int numQuestions, String difficulty) {
         return String.format("Generate a %s quiz titled '%s' with %d multiple-choice questions based on the following course material. Each question should have four answer options numbered 0, 1, 2, and 3, and at the end of each question, specify the correct answer number in the format 'Answer: <number>'.\n%s",
@@ -73,12 +102,12 @@ public class CohereClient {
     }
 
 
-    // method to parst the API response and create Quiz and QuizQuestion objects
+    // method to parst the API response and creates Quiz and QuizQuestion objects
     public Quiz processApiResponse(String apiResponse, String quizTitle) throws JSONException {
-        JSONObject jsonResponse = new JSONObject(apiResponse); // converts raw JSON response string into a JSON object
-        String generatedText = jsonResponse.getJSONArray("generations").getJSONObject(0).getString("text"); // extracts the generated quiz test from teh JSON response
+//        JSONObject jsonResponse = new JSONObject(apiResponse); // converts raw JSON response string into a JSON object
+//        String generatedText = jsonResponse.getJSONArray("generations").getJSONObject(0).getString("text"); // extracts the generated quiz test from teh JSON response
 
-        String[] lines = generatedText.split("\n"); // splits teh generated text into individual lines
+        String[] lines = apiResponse.split("\n"); // splits the generated text into individual lines
         List<QuizQuestion> questions = new ArrayList<>();  // Creates a list to store each QuizQuestion object after extracting them from the text
 
         for (int i = 0; i < lines.length; i += 6) {        // processes 5 lines at a time since each question is expected to occupy 5 lines
@@ -112,7 +141,7 @@ public class CohereClient {
             JSONObject questionJson = new JSONObject();
             questionJson.put("question", question.getQuestion());
             questionJson.put("answers", new JSONArray(question.getAnswers()));
-            questionJson.put("correctAnswer", question.getCorrectAnswer());
+            questionJson.put("correctAnswer", question.getCorrectIndex());
             questionsArray.put(questionJson);
         }
 
@@ -121,7 +150,7 @@ public class CohereClient {
     }
 
     // combines the above methods to generate a quiz and convert it to JSON
-    public JSONObject generateQuizJson(String courseMaterial, String quizTitle, int numQuestions, String difficulty, int maxTokens) throws IOException, JSONException {
+    public JSONObject generateQuizJson(String courseMaterial, String quizTitle, int numQuestions, String difficulty, int maxTokens) throws IOException, JSONException, ParseException {
         String prompt = createPrompt(courseMaterial, quizTitle, numQuestions, difficulty);
         Quiz quiz = generateQuestions(prompt, maxTokens, quizTitle);
         return quizToJson(quiz);

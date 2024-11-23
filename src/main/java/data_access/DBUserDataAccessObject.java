@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import entity.Quiz;
+import entity.QuizQuestion;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +35,9 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String STATUS_CODE_LABEL = "status_code";
     private static final String USERNAME = "username";
+    private static final String QUIZNAME = "quizName";
     private static final String PASSWORD = "password";
+    private static final String QUIZ_QUESTIONS = "quizQuestions";
     private static final String MESSAGE = "message";
     private static final String STORAGE_URL = "https://firestore.googleapis.com/v1/projects/quizcraft-eb0a5/databases/(default)/documents/";
     private static final String PATH_TO_USERS = "users/";
@@ -140,7 +144,66 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     }
 
     @Override
-    public void saveQuiz(Quiz quiz) {
+    public void saveQuiz(Quiz quiz, String username) {
+        String documentName = quiz.getName() + "-" + username;
+        final OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
+        JSONObject requestBody = new JSONObject();
+        JSONObject fields = new JSONObject();
+        requestBody.put("fields", fields);
 
+        // Add quiz name
+        fields.put("quizName", new JSONObject().put("stringValue", quiz.getName()));
+
+        // Add quiz questions
+        JSONArray quizQuestions = new JSONArray();
+        for (QuizQuestion quizQuestion : quiz.getQuestions()) {
+            JSONObject quizQuestionJSON = new JSONObject();
+            JSONObject questionFields = new JSONObject();
+
+            // Add question text
+            questionFields.put("question", new JSONObject().put("stringValue", quizQuestion.getQuestion()));
+
+            // Add correct answer index
+            questionFields.put("correctAnswer", new JSONObject().put("integerValue", quizQuestion.getCorrectIndex()));
+
+            // Add answers array
+            JSONArray answers = new JSONArray();
+            for (String answer : quizQuestion.getAnswers()) {
+                answers.put(new JSONObject().put("stringValue", answer));
+            }
+            questionFields.put("answers", new JSONObject().put("arrayValue", new JSONObject().put("values", answers)));
+
+            quizQuestionJSON.put("fields", questionFields);
+            quizQuestions.put(new JSONObject().put("mapValue", quizQuestionJSON));
+        }
+
+        fields.put("quizQuestions", new JSONObject().put("arrayValue", new JSONObject().put("values", quizQuestions)));
+
+        // Add username as userID
+        fields.put("userID", new JSONObject().put("stringValue", username));
+
+        final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
+        final Request request = new Request.Builder()
+                .url(STORAGE_URL + "quizzes/" + "?documentId=" + documentName)
+                .method("POST", body)
+                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
+                .build();
+        try {
+            final Response response = client.newCall(request).execute();
+
+            final JSONObject responseBody = new JSONObject(response.body().string());
+
+            if (response.code() == SUCCESS_CODE) {
+//                success
+            }
+            else {
+                throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
+            }
+        }
+        catch (IOException | JSONException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

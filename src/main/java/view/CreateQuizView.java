@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -14,11 +13,12 @@ import java.util.Enumeration;
 import interface_adapter.create_quiz.CreateQuizViewModel;
 import interface_adapter.create_quiz.CreateQuizState;
 import interface_adapter.create_quiz.CreateQuizController;
+import interface_adapter.login.LoginState;
 
 public class CreateQuizView extends JPanel implements ActionListener, PropertyChangeListener {
     private CreateQuizController createQuizController;
     private final String viewName = "CreateQuizView";
-    private final CreateQuizViewModel viewModel;
+    private final CreateQuizViewModel createQuizViewModel;
     private JTextField quizNameField;
     private JTextField questionAmountField;
     private ButtonGroup difficultyGroup;
@@ -27,8 +27,8 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     private JButton cancelButton;
 
     public CreateQuizView(CreateQuizViewModel viewModel) {
-        this.viewModel = viewModel;
-        this.viewModel.addPropertyChangeListener(this);
+        this.createQuizViewModel = viewModel;
+        this.createQuizViewModel.addPropertyChangeListener(this);
         initializeUI();
     }
 
@@ -56,21 +56,59 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
 
         JButton pdfUploadButton = new JButton("Upload PDF");
         pdfLabel = new JLabel("No file selected");
-        pdfUploadButton.addActionListener(e -> handlePDFUpload());
+        pdfUploadButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(pdfUploadButton)) {
+                            JFileChooser fileChooser = new JFileChooser();
+                            fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
+                            if (fileChooser.showOpenDialog(CreateQuizView.this) == JFileChooser.APPROVE_OPTION) {
+                                File selectedPDF = fileChooser.getSelectedFile();
+                                pdfLabel.setText(selectedPDF.getName());
+                                CreateQuizState state = createQuizViewModel.getState();
+                                state.setPdfFileName(selectedPDF.getAbsolutePath());
+                                createQuizViewModel.setState(state);
+                            }
+                        }
+                    }
+        });
 
         createButton = new JButton("Create");
         cancelButton = new JButton("Cancel");
-        createButton.addActionListener(this);
-        cancelButton.addActionListener(this);
+        createButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource() == createButton) {
+                            final CreateQuizState currentState = createQuizViewModel.getState();
+                            currentState.setDifficulty(getSelectedDifficulty());
+                            createQuizController.execute(
+                                    currentState.getQuizName(),
+                                    currentState.getQuestionAmount(),
+                                    currentState.getDifficulty(),
+                                    currentState.getPdfFileName(),
+                                    currentState.getUsername()
+                            );
+                        }
+                    }
+                });
+        cancelButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource() == cancelButton) {
+                            resetFields();
+                            createQuizController.switchToDashboardView();
+                        }
+                    }
+                });
 
         quizNameField.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { updateQuizName(); }
             public void removeUpdate(DocumentEvent e) { updateQuizName(); }
             public void changedUpdate(DocumentEvent e) { updateQuizName(); }
             private void updateQuizName() {
-                CreateQuizState state = viewModel.getState();
+                CreateQuizState state = createQuizViewModel.getState();
                 state.setQuizName(quizNameField.getText());
-                viewModel.setState(state);
+                createQuizViewModel.setState(state);
             }
         });
 
@@ -79,9 +117,9 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
             public void removeUpdate(DocumentEvent e) { updateQuestionAmount(); }
             public void changedUpdate(DocumentEvent e) { updateQuestionAmount(); }
             private void updateQuestionAmount() {
-                CreateQuizState state = viewModel.getState();
-                state.setQuestionAmount(questionAmountField.getText());
-                viewModel.setState(state);
+                CreateQuizState state = createQuizViewModel.getState();
+                state.setQuestionAmount(Integer.parseInt(questionAmountField.getText()));
+                createQuizViewModel.setState(state);
             }
         });
 
@@ -102,24 +140,33 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
         add(cancelButton);
     }
 
-    private void handlePDFUpload() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            File selectedPDF = fileChooser.getSelectedFile();
-            pdfLabel.setText(selectedPDF.getName());
-            CreateQuizState state = viewModel.getState();
-            state.setPdfFileName(selectedPDF.getName());
-            viewModel.setState(state);
-        }
-    }
+//    private void handlePDFUpload() {
+//        if (evt.getSource().equals(logIn)) {
+//            JFileChooser fileChooser = new JFileChooser();
+//            fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
+//            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+//                File selectedPDF = fileChooser.getSelectedFile();
+//                pdfLabel.setText(selectedPDF.getName());
+//                CreateQuizState state = createQuizViewModel.getState();
+//                state.setPdfFileName(selectedPDF.getAbsolutePath());
+//                createQuizViewModel.setState(state);
+//            }
+//        }
+//    }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == createButton) {
-            CreateQuizState state = viewModel.getState();
-            state.setDifficulty(getSelectedDifficulty());
-            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
+            final CreateQuizState currentState = createQuizViewModel.getState();
+            currentState.setDifficulty(getSelectedDifficulty());
+            createQuizController.execute(
+                    currentState.getQuizName(),
+                    currentState.getQuestionAmount(),
+                    currentState.getDifficulty(),
+                    currentState.getPdfFileName(),
+                    currentState.getUsername()
+            );
+//            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
         } else if (evt.getSource() == cancelButton) {
             resetFields();
             createQuizController.switchToDashboardView();
@@ -131,12 +178,12 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
         questionAmountField.setText("");
         difficultyGroup.clearSelection();
         pdfLabel.setText("No file selected");
-        CreateQuizState state = viewModel.getState();
+        CreateQuizState state = createQuizViewModel.getState();
         state.setQuizName("");
-        state.setQuestionAmount("");
+        state.setQuestionAmount(0);
         state.setDifficulty("");
         state.setPdfFileName("No file selected");
-        viewModel.setState(state);
+        createQuizViewModel.setState(state);
     }
 
     private String getSelectedDifficulty() {
@@ -153,7 +200,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     public void propertyChange(PropertyChangeEvent evt) {
         CreateQuizState state = (CreateQuizState) evt.getNewValue();
         quizNameField.setText(state.getQuizName());
-        questionAmountField.setText(state.getQuestionAmount());
+        questionAmountField.setText(String.valueOf(state.getQuestionAmount()));
         pdfLabel.setText(state.getPdfFileName());
     }
 
