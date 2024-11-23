@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.DBUserDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
 import entity.Quiz;
 import entity.UserFactory;
@@ -46,7 +45,6 @@ import interface_adapter.dashboard.DashboardViewModel;
 
 import interface_adapter.dashboard.DashboardController;
 import interface_adapter.dashboard.DashboardPresenter;
-import interface_adapter.dashboard.DashboardViewModel;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -72,8 +70,8 @@ public class AppBuilder {
     private SignupView signupView;
     private SignupViewModel signupViewModel;
     private LoginViewModel loginViewModel;
-    private DashboardViewModel loggedInViewModel;
-    private DashboardView loggedInView;
+    private DashboardViewModel dashboardViewModel;
+    private DashboardView dashboardView;
     private LoginView loginView;
     private CreateQuizViewModel createQuizViewModel;
     private CreateQuizView createQuizView;
@@ -109,9 +107,21 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLoggedInView() {
-        loggedInViewModel = new DashboardViewModel();
-        loggedInView = new DashboardView(loggedInViewModel);
-        cardPanel.add(loggedInView, loggedInView.getViewName());
+        dashboardViewModel = new DashboardViewModel();
+        dashboardView = new DashboardView(dashboardViewModel);
+        cardPanel.add(dashboardView, dashboardView.getViewName());
+        return this;
+    }
+    public AppBuilder addCreateQuizView() {
+        createQuizViewModel = new CreateQuizViewModel();
+        createQuizView = new CreateQuizView(createQuizViewModel);
+        cardPanel.add(createQuizView, createQuizView.getViewName());
+        return this;
+    }
+    public AppBuilder addViewQuizView() {
+        viewQuizViewModel = new ViewQuizViewModel();
+        viewQuizView = new ViewQuizView(viewQuizViewModel);
+        cardPanel.add(viewQuizView, viewQuizView.getViewName());
         return this;
     }
 
@@ -131,7 +141,7 @@ public class AppBuilder {
     }
 
     public AppBuilder addLoggedInUseCase() {
-        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, loggedInViewModel);
+        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel);
         final DashboardDataAccessInterface dashboardRepository = new DashboardDataAccessInterface() {
             @Override
             public List<Quiz> getQuizzes() {
@@ -142,10 +152,10 @@ public class AppBuilder {
 
         final DashboardController dashboardController = new DashboardController(dashboardInteractor, viewManagerModel);
 
-        final LogoutController logoutController = new LogoutController(new LogoutInteractor(userDataAccessObject, new LogoutPresenter(viewManagerModel, loggedInViewModel, loginViewModel)));
+        final LogoutController logoutController = new LogoutController(new LogoutInteractor(userDataAccessObject, new LogoutPresenter(viewManagerModel, dashboardViewModel, loginViewModel)));
 
-        loggedInView.setDashboardController(dashboardController);
-        loggedInView.setLogoutController(logoutController);
+        dashboardView.setDashboardController(dashboardController);
+        dashboardView.setLogoutController(logoutController);
 
         return this;
     }
@@ -156,7 +166,7 @@ public class AppBuilder {
      */
     public AppBuilder addLoginUseCase() {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
-                loggedInViewModel, loginViewModel);
+                dashboardViewModel, loginViewModel);
         final LoginInputBoundary loginInteractor = new LoginInteractor(
                 userDataAccessObject, loginOutputBoundary);
 
@@ -171,31 +181,34 @@ public class AppBuilder {
      */
     public AppBuilder addLogoutUseCase() {
         final LogoutOutputBoundary logoutOutputBoundary = new LogoutPresenter(viewManagerModel,
-                loggedInViewModel, loginViewModel);
+                dashboardViewModel, loginViewModel);
 
         final LogoutInputBoundary logoutInteractor =
                 new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
 
         final LogoutController logoutController = new LogoutController(logoutInteractor);
-        loggedInView.setLogoutController(logoutController);
-        return this;
-    }
-
-    public AppBuilder addCreateQuizView() {
-        createQuizViewModel = new CreateQuizViewModel();
-        createQuizView = new CreateQuizView(createQuizViewModel);
-        cardPanel.add(createQuizView, createQuizView.getViewName());
+        dashboardView.setLogoutController(logoutController);
         return this;
     }
 
     public AppBuilder addCreateQuizUseCase() {
         final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
-                loggedInViewModel, createQuizViewModel);
+                viewQuizViewModel, createQuizViewModel);
         final CreateQuizInputBoundary createQuizInteractor =
-                new CreateQuizInteractor(createQuizOutputBoundary);
+                new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject, quizFactory, aiAccessObject);
 
         final CreateQuizController createQuizController = new CreateQuizController(createQuizInteractor);
         createQuizView.setCreateQuizController(createQuizController);
+        return this;
+    }
+    public AppBuilder addViewQuizUseCase() {
+        final ViewQuizOutputBoundary viewQuizOutputBoundary = new ViewQuizPresenter(viewManagerModel,
+                loggedInViewModel, viewQuizViewModel);
+        final ViewQuizInputBoundary viewQuizInteractor =
+                new ViewQuizInteractor(viewQuizOutputBoundary);
+
+        final ViewQuizController viewQuizController = new ViewQuizController(viewQuizInteractor);
+        viewQuizView.setViewQuizController(viewQuizController);
         return this;
     }
 
@@ -209,7 +222,7 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(loggedInView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
+        viewManagerModel.setState(dashboardView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;
