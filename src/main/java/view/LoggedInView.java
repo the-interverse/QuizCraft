@@ -1,6 +1,5 @@
 package view;
 
-import QuizUIGenerator.RetrieveQuiz;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -58,10 +57,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.add(username);
         this.add(passwordErrorField);
         this.add(buttons);
-//
-//        RetrieveQuiz retrieveQuiz = new RetrieveQuiz();
-//        JComponent quizListComponent = retrieveQuiz.getQuizListComponent();
-//        this.add(quizListComponent);
     }
 
     @Override
