@@ -16,11 +16,13 @@ public class Main {
                                             .addLoginView()
                                             .addSignupView()
                                             .addLoggedInView()
-                                            .addLoggedInUseCase()
                                             .addCreateQuizView()
-                                            .addCreateQuizUseCase()
+                                            .addViewQuizView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
+                                            .addLoggedInUseCase()
+                                            .addCreateQuizUseCase()
+                                            .addViewQuizUseCase()
                                             .addLogoutUseCase()
                                             .build();
 
