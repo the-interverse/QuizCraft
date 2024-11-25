@@ -32,12 +32,10 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
 
         setLayout(new BorderLayout());
 
-        // Title Section
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(titleLabel, BorderLayout.NORTH);
 
-        // Quizzes Section
         quizzesPanel.setLayout(new GridLayout(0, 2, 10, 10));
         quizzesPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(new JScrollPane(quizzesPanel), BorderLayout.CENTER);
@@ -65,6 +63,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
             }
         });
 
+
         userPanel.add(usernameLabel);
         userPanel.add(Box.createVerticalStrut(10));
         userPanel.add(logOutButton);
@@ -73,7 +72,6 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
 
         add(userPanel, BorderLayout.SOUTH);
 
-        // Initialize with quizzes
         updateQuizzes(dashboardViewModel.getState().getQuizzes());
     }
 

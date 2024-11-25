@@ -1,5 +1,6 @@
 package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.dashboard.DashboardViewModel;
 import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
@@ -9,13 +10,16 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
     private ViewQuizViewModel viewQuizViewModel;
     private ViewManagerModel viewManagerModel;
     private CreateQuizViewModel createQuizViewModel;
+    private DashboardViewModel dashboardViewModel;
 
     public CreateQuizPresenter(ViewManagerModel viewManagerModel,
                                ViewQuizViewModel viewQuizViewModel,
-                           CreateQuizViewModel createQuizViewModel) {
+                           CreateQuizViewModel createQuizViewModel,
+                               DashboardViewModel dashboardViewModel) {
         this.viewQuizViewModel = viewQuizViewModel;
         this.viewManagerModel = viewManagerModel;
         this.createQuizViewModel = createQuizViewModel;
+        this.dashboardViewModel = dashboardViewModel;
     }
 
 
@@ -43,7 +47,7 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void switchToDashboardView() {
-        viewManagerModel.setState("logged in");
+        viewManagerModel.setState(dashboardViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 }

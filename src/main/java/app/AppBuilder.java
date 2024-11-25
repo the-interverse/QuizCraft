@@ -168,7 +168,7 @@ public class AppBuilder {
     }
 
     public AppBuilder addLoggedInUseCase() {
-        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel);
+        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel, createQuizViewModel);
         final DashboardDataAccessInterface dashboardRepository = new DashboardDataAccessInterface() {
             @Override
             public List<Quiz> getQuizzes(String username) {
@@ -220,7 +220,7 @@ public class AppBuilder {
 
     public AppBuilder addCreateQuizUseCase() {
         final CreateQuizOutputBoundary createQuizOutputBoundary = new CreateQuizPresenter(viewManagerModel,
-                viewQuizViewModel, createQuizViewModel);
+                viewQuizViewModel, createQuizViewModel, dashboardViewModel);
         final CreateQuizInputBoundary createQuizInteractor =
                 new CreateQuizInteractor(createQuizOutputBoundary, programDataAccessObject, quizFactory, aiAccessObject);
 
@@ -249,8 +249,7 @@ public class AppBuilder {
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         application.add(cardPanel);
-
-        viewManagerModel.setState(loginView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
+        viewManagerModel.setState(dashboardView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;
