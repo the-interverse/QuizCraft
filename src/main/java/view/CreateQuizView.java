@@ -17,7 +17,7 @@ import interface_adapter.login.LoginState;
 
 public class CreateQuizView extends JPanel implements ActionListener, PropertyChangeListener {
     private CreateQuizController createQuizController;
-    private final String viewName = "CreateQuizView";
+    private final String viewName = "createQuiz";
     private final CreateQuizViewModel createQuizViewModel;
     private JTextField quizNameField;
     private JTextField questionAmountField;
