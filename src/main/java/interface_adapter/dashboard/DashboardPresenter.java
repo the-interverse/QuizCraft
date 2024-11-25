@@ -2,6 +2,7 @@ package interface_adapter.dashboard;
 
 import interface_adapter.ViewManagerModel;
 import entity.Quiz;
+import interface_adapter.create_quiz.CreateQuizViewModel;
 import use_case.dashboard.DashboardOutputBoundary;
 import use_case.dashboard.DashboardOutputData;
 
@@ -13,11 +14,13 @@ import java.util.List;
 public class DashboardPresenter implements DashboardOutputBoundary {
 
     private final DashboardViewModel dashboardViewModel;
+    private final CreateQuizViewModel createQuizViewModel;
     private final ViewManagerModel viewManagerModel;
 
-    public DashboardPresenter(ViewManagerModel viewManagerModel, DashboardViewModel dashboardViewModel) {
+    public DashboardPresenter(ViewManagerModel viewManagerModel, DashboardViewModel dashboardViewModel, CreateQuizViewModel createQuizViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.dashboardViewModel = dashboardViewModel;
+        this.createQuizViewModel = createQuizViewModel;
     }
 
     @Override
@@ -38,7 +41,8 @@ public class DashboardPresenter implements DashboardOutputBoundary {
     }
     @Override
     public void switchToCreateQuizView() {
-        viewManagerModel.setState(dashboardViewModel.getViewName());
+        viewManagerModel.setState(createQuizViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
+
 }

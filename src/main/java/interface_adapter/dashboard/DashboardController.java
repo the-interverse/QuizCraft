@@ -23,4 +23,5 @@ public class DashboardController {
     public void switchToCreateQuizView() {
         dashboardInteractor.switchToCreateQuizView();
     }
+
 }

@@ -12,7 +12,7 @@ public class CreateQuizViewModel extends ViewModel<CreateQuizState> {
     public static final String CANCEL_BUTTON_LABEL = "Cancel";
 
     public CreateQuizViewModel() {
-        super("create quiz");
+        super("createQuiz");
         setState(new CreateQuizState());
     }
 }
