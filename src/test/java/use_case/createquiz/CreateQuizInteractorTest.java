@@ -6,6 +6,8 @@ import entity.UserFactory;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import use_case.create_quiz.CreateQuizInputData;
+import use_case.create_quiz.CreateQuizOutputBoundary;
+import use_case.create_quiz.CreateQuizOutputData;
 import use_case.login.*;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
@@ -28,18 +30,22 @@ public class CreateQuizInteractorTest {
 
     @Test
     void successTest() {
-        CreateQuizInputData inputData = new CreateQuizInputData("Test Quiz", 3, "Easy", "src/test/resources/02-Git.pdf", "kirill");
+        CreateQuizInputData inputData = new CreateQuizInputData("Git Quiz", 3, "Easy", "src/test/resources/02-Git.pdf", "kirill");
         // This creates a successPresenter that tests whether the test case is as we expect.
-        LogoutOutputBoundary successPresenter = new LogoutOutputBoundary() {
+        CreateQuizOutputBoundary successPresenter = new CreateQuizOutputBoundary() {
             @Override
-            public void prepareSuccessView(LogoutOutputData user) {
-                // check that the output data contains the username of who logged out
-                assertEquals("Paul", user.getUsername());
+            public void prepareSuccessView(CreateQuizOutputData outputData) {
+
             }
 
             @Override
             public void prepareFailView(String error) {
                 fail("Use case failure is unexpected.");
+            }
+
+            @Override
+            public void switchToDashboardView() {
+
             }
         };
 

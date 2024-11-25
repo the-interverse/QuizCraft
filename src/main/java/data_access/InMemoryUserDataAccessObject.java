@@ -1,5 +1,6 @@
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +59,29 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         if (userQuizzes == null) {
             return false;
         }
-//        else {
-//
+        else {
+            for (Quiz quiz : userQuizzes) {
+                if (quiz.getName().equals(quizName)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public void saveQuiz(Quiz quiz, String username) {
-
+        if (quizzes.containsKey(username)) {
+            quizzes.get(username).add(quiz);
+        } else {
+            List<Quiz> userQuizzes = new ArrayList<>();
+            userQuizzes.add(quiz);
+            quizzes.put(username, userQuizzes);
+        }
     }
 
     @Override
     public List<Quiz> getQuizzes(String username) {
-        return List.of();
+        return quizzes.get(username);
     }
 }
