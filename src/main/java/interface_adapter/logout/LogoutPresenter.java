@@ -1,8 +1,8 @@
 package interface_adapter.logout;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.dashboard.LoggedInState;
-import interface_adapter.dashboard.LoggedInViewModel;
+import interface_adapter.dashboard.DashboardState;
+import interface_adapter.dashboard.DashboardViewModel;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import use_case.logout.LogoutOutputBoundary;
@@ -13,15 +13,15 @@ import use_case.logout.LogoutOutputData;
  */
 public class LogoutPresenter implements LogoutOutputBoundary {
 
-    private LoggedInViewModel loggedInViewModel;
+    private DashboardViewModel dashboardViewModel;
     private ViewManagerModel viewManagerModel;
     private LoginViewModel loginViewModel;
 
     public LogoutPresenter(ViewManagerModel viewManagerModel,
-                          LoggedInViewModel loggedInViewModel,
+                          DashboardViewModel dashboardViewModel,
                            LoginViewModel loginViewModel) {
         // Completed: assign to the three instance variables.
-        this.loggedInViewModel = loggedInViewModel;
+        this.dashboardViewModel = dashboardViewModel;
         this.viewManagerModel = viewManagerModel;
         this.loginViewModel = loginViewModel;
     }
@@ -39,10 +39,10 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         // 2. set the username in the state to the empty string
         // 3. set the state in the LoggedInViewModel to the updated state
         // 4. firePropertyChanged so that the View that is listening is updated.
-        final LoggedInState loggedInState = this.loggedInViewModel.getState();
-        loggedInState.setUsername("");
-        this.loggedInViewModel.setState(loggedInState);
-        this.loggedInViewModel.firePropertyChanged();
+        final DashboardState dashboardState = this.dashboardViewModel.getState();
+        dashboardState.setUsername("");
+        this.dashboardViewModel.setState(dashboardState);
+        this.dashboardViewModel.firePropertyChanged();
 
         // Completed: have prepareSuccessView update the LoginState
         // 5. get the LoginState out of the appropriate View Model,
