@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class DashboardOutputData {
 
-    private final List<Quiz> quizzes;
+    private final List<String> quizzes;
 
-    public DashboardOutputData(List<Quiz> quizzes) {
+    public DashboardOutputData(List<String> quizzes) {
         this.quizzes = quizzes;
     }
-    public List<Quiz> getQuizzes() {
+    public List<String> getQuizzes() {
         return quizzes;
     }
 }

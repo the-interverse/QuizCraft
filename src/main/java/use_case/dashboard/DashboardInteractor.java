@@ -19,7 +19,7 @@ public class DashboardInteractor implements DashboardInputBoundary {
 
     @Override
     public void execute(DashboardInputData dashboardInputData) {
-        List<Quiz> quizzes = dashboardDataAccessObject.getQuizzes(dashboardInputData.getUsername());
+        List<String> quizzes = dashboardDataAccessObject.getQuizzes(dashboardInputData.getUsername());
         if (quizzes.isEmpty()) {
             dashboardPresenter.prepareFailView("No quizzes found.");
         } else {
