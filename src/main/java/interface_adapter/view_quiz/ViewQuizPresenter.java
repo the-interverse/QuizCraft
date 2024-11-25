@@ -1,22 +1,20 @@
 package interface_adapter.view_quiz;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.view_quiz.ViewQuizState;
-import interface_adapter.view_quiz.ViewQuizViewModel;
-import interface_adapter.dashboard.LoggedInViewModel;
+import interface_adapter.dashboard.DashboardViewModel;
 import use_case.view_quiz.ViewQuizOutputBoundary;
 import use_case.view_quiz.ViewQuizOutputData;
 
 public class ViewQuizPresenter implements ViewQuizOutputBoundary {
 
-    private LoggedInViewModel loggedInViewModel;
+    private DashboardViewModel dashboardViewModel;
     private ViewManagerModel viewManagerModel;
     private ViewQuizViewModel viewQuizViewModel;
 
     public ViewQuizPresenter(ViewManagerModel viewManagerModel,
-                               LoggedInViewModel loggedInViewModel,
+                               DashboardViewModel dashboardViewModel,
                                ViewQuizViewModel viewQuizViewModel) {
-        this.loggedInViewModel = loggedInViewModel;
+        this.dashboardViewModel = dashboardViewModel;
         this.viewManagerModel = viewManagerModel;
         this.viewQuizViewModel = viewQuizViewModel;
     }
