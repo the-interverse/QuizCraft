@@ -2,6 +2,7 @@ package data_access;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.Quiz;
@@ -18,6 +19,7 @@ import okhttp3.Response;
 import entity.UserFactory;
 import entity.User;
 import use_case.create_quiz.CreateQuizDataAccessInterface;
+import use_case.dashboard.DashboardDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -28,7 +30,8 @@ import use_case.signup.SignupUserDataAccessInterface;
 public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        CreateQuizDataAccessInterface {
+        CreateQuizDataAccessInterface,
+        DashboardDataAccessInterface {
     private static final int SUCCESS_CODE = 200;
     private static final int ERROR_CODE = 400;
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
@@ -200,6 +203,33 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             }
             else {
                 throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
+            }
+        }
+        catch (IOException | JSONException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public List<Quiz> getQuizzes(String username) {
+        OkHttpClient client = new OkHttpClient();
+
+        String url = STORAGE_URL + "quizzes/" + ":listCollectionIds";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            final Response response = client.newCall(request).execute();
+
+            final JSONObject responseBody = new JSONObject(response.body().string());
+
+            if (response.code() == SUCCESS_CODE) {
+                return List.of();
+            }
+            else {
+                throw new RuntimeException(responseBody.getString(MESSAGE));
             }
         }
         catch (IOException | JSONException ex) {

@@ -171,7 +171,7 @@ public class AppBuilder {
         final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel);
         final DashboardDataAccessInterface dashboardRepository = new DashboardDataAccessInterface() {
             @Override
-            public List<Quiz> getQuizzes() {
+            public List<Quiz> getQuizzes(String username) {
                 return List.of();
             }
         };
@@ -250,7 +250,7 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(viewQuizView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
+        viewManagerModel.setState(loginView.getViewName()); //I changed this so we can see the UI, originally it was the signupView ~ Yasser
         viewManagerModel.firePropertyChanged();
 
         return application;
