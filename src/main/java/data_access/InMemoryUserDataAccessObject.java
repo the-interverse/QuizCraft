@@ -1,9 +1,13 @@
 package data_access;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import entity.Quiz;
 import entity.User;
+import use_case.create_quiz.CreateQuizDataAccessInterface;
+import use_case.dashboard.DashboardDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -14,9 +18,12 @@ import use_case.signup.SignupUserDataAccessInterface;
  */
 public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
-        LogoutUserDataAccessInterface {
+        LogoutUserDataAccessInterface,
+        CreateQuizDataAccessInterface,
+        DashboardDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
+    private final Map<String, List<Quiz>> quizzes = new HashMap<>();
 
     private String currentUsername;
 
@@ -43,5 +50,26 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public String getCurrentUsername() {
         return this.currentUsername;
+    }
+
+    @Override
+    public boolean quizExistsByName(String username, String quizName) {
+        List<Quiz> userQuizzes = quizzes.get(username);
+        if (userQuizzes == null) {
+            return false;
+        }
+//        else {
+//
+        return false;
+    }
+
+    @Override
+    public void saveQuiz(Quiz quiz, String username) {
+
+    }
+
+    @Override
+    public List<Quiz> getQuizzes(String username) {
+        return List.of();
     }
 }

@@ -11,6 +11,6 @@ public interface DashboardDataAccessInterface {
      * Returns the list of quizzes created by user.
      * @return the list of quizzes created by user.
      */
-    List<Quiz> getQuizzes();
+    List<Quiz> getQuizzes(String username);
 }
 

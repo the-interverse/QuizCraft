@@ -11,9 +11,9 @@ import java.util.Map;
 public class CreateQuizOutputData {
 
     private final String quizName;
-    private final List<Map<String, Map<Integer, String>>> questions = new ArrayList<>();
+    private final List<Map<String, List<String>>> questions = new ArrayList<>();
 
-    public CreateQuizOutputData(String quizName, List<Map<String, Map<Integer, String>>> questions) {
+    public CreateQuizOutputData(String quizName, List<Map<String, List<String>>> questions) {
         this.quizName = quizName;
         this.questions.addAll(new ArrayList<>(questions));
     }
@@ -22,7 +22,7 @@ public class CreateQuizOutputData {
         return quizName;
     }
 
-    public List<Map<String, Map<Integer, String>>> getQuestions() {
+    public List<Map<String, List<String>>> getQuestions() {
         return questions;
     }
 }

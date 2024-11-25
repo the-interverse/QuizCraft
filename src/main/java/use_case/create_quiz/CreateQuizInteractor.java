@@ -63,7 +63,7 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
                 }
                 quizDataAccessObject.saveQuiz(quiz, username);
                 assert quiz != null;
-                final List<Map<String, Map<Integer, String>>> questions = getQuestions(quiz);
+                final List<Map<String, List<String>>> questions = getQuestions(quiz);
                 final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
                 createQuizPresenter.prepareSuccessView(createQuizOutputData);
             } catch (Exception e) {
@@ -77,12 +77,12 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
     }
 
     @NotNull
-    private static List<Map<String, Map<Integer, String>>> getQuestions(Quiz quiz) {
-        final List<Map<String, Map<Integer, String>>> questions = new ArrayList<>();
+    private static List<Map<String, List<String>>> getQuestions(Quiz quiz) {
+        final List<Map<String, List<String>>> questions = new ArrayList<>();
         for (QuizQuestion question : quiz.getQuestions()){
-            Map answers = new HashMap<>();
+            List<String> answers = new ArrayList<>();
             for (Integer i = 0; i < question.getAnswers().size(); i++){
-                answers.put(i, question.getAnswers().get(i));
+                answers.add(question.getAnswers().get(i));
             }
             Map questionAndAnswers = new HashMap<>();
             questionAndAnswers.put(question.getQuestion(), answers);
