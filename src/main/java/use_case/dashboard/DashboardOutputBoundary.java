@@ -16,5 +16,6 @@ public interface DashboardOutputBoundary {
      */
     void prepareFailView(String errorMessage);
     void switchToCreateQuizView();
+    void switchToViewQuizView();
 }
 

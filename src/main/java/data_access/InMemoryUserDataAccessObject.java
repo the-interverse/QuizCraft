@@ -69,7 +69,7 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     @Override
-    public List<Quiz> getQuizzes(String username) {
+    public List<String> getQuizzes(String username) {
         return List.of();
     }
 }

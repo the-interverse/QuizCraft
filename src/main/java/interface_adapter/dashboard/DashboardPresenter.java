@@ -3,6 +3,7 @@ package interface_adapter.dashboard;
 import interface_adapter.ViewManagerModel;
 import entity.Quiz;
 import interface_adapter.create_quiz.CreateQuizViewModel;
+import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.dashboard.DashboardOutputBoundary;
 import use_case.dashboard.DashboardOutputData;
 
@@ -15,17 +16,20 @@ public class DashboardPresenter implements DashboardOutputBoundary {
 
     private final DashboardViewModel dashboardViewModel;
     private final CreateQuizViewModel createQuizViewModel;
+    private final ViewQuizViewModel viewQuizViewModel;
     private final ViewManagerModel viewManagerModel;
 
-    public DashboardPresenter(ViewManagerModel viewManagerModel, DashboardViewModel dashboardViewModel, CreateQuizViewModel createQuizViewModel) {
+    public DashboardPresenter(ViewManagerModel viewManagerModel, DashboardViewModel dashboardViewModel,
+                              CreateQuizViewModel createQuizViewModel, ViewQuizViewModel viewQuizViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.dashboardViewModel = dashboardViewModel;
         this.createQuizViewModel = createQuizViewModel;
+        this.viewQuizViewModel = viewQuizViewModel;
     }
 
     @Override
     public void prepareSuccessView(DashboardOutputData outputData) {
-        List<Quiz> quizzes = outputData.getQuizzes();
+        List<String> quizzes = outputData.getQuizzes();
         DashboardState state = dashboardViewModel.getState();
         state.setQuizzes(quizzes);
         dashboardViewModel.setState(state);
@@ -42,6 +46,11 @@ public class DashboardPresenter implements DashboardOutputBoundary {
     @Override
     public void switchToCreateQuizView() {
         viewManagerModel.setState(createQuizViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
+    }
+    @Override
+    public void switchToViewQuizView() {
+        viewManagerModel.setState(viewQuizViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 

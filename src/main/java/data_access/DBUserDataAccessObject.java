@@ -211,7 +211,7 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     }
 
     @Override
-    public List<Quiz> getQuizzes(String username) {
+    public List<String> getQuizzes(String username) {
         OkHttpClient client = new OkHttpClient();
 
         String url = STORAGE_URL + "quizzes/" + ":listCollectionIds";
