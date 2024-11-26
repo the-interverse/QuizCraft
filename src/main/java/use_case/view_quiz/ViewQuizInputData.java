@@ -5,10 +5,10 @@ import java.util.Map;
 
 public class ViewQuizInputData {
     private String quizName;
-    private List<Map<String, List<String>>> questionsAndOptions;
+    private List<Map<String, Object>> questionsAndOptions;
     private String username;
 
-    public ViewQuizInputData(List<Map<String, List<String>>> questionsAndOptions, String username, String quizName) {
+    public ViewQuizInputData(List<Map<String, Object>> questionsAndOptions, String username, String quizName) {
         this.quizName = quizName;
         this.questionsAndOptions = questionsAndOptions;
         this.username = username;
@@ -22,7 +22,7 @@ public class ViewQuizInputData {
         return username;
     }
 
-    public List<Map<String, List<String>>> getQuestionsAndOptions() {
+    public List<Map<String, Object>> getQuestionsAndOptions() {
         return questionsAndOptions;
     }
 }

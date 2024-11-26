@@ -44,7 +44,7 @@ public class ViewQuizPresenter implements ViewQuizOutputBoundary {
 
     @Override
     public void switchToDashboardView() {
-        viewManagerModel.setState("logged in");
+        viewManagerModel.setState(dashboardViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 }

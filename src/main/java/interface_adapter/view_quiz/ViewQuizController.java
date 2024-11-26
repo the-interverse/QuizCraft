@@ -13,11 +13,11 @@ public class ViewQuizController {
         this.viewQuizInteractor = viewQuizInteractor;
     }
 
-    public void switchToCreateQuizView() {
+    public void switchToDashboardView() {
         viewQuizInteractor.switchToDashboardView();
     }
 
-    public void execute(List<Map<String, List<String>>> questionsAndOptions, String username, String quizName){
+    public void execute(List<Map<String, Object>> questionsAndOptions, String username, String quizName){
         final ViewQuizInputData viewQuizInputData = new ViewQuizInputData(questionsAndOptions, username, quizName);
         viewQuizInteractor.execute(viewQuizInputData);
     }
