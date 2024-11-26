@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.User;
@@ -94,6 +95,11 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
     @Override
     public void setCurrentUsername(String name) {
         this.currentUsername = name;
+    }
+
+    @Override
+    public List<String> getQuizzes(String username) {
+        return List.of();
     }
 
     @Override
