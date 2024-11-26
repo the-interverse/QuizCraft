@@ -72,4 +72,12 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     public List<String> getQuizzes(String username) {
         return List.of();
     }
+
+
+    //TODO: This must also be implemented
+    @Override
+    public List<Map<String, Object>> getQuizData(String username, String quizName) {
+        return null;
+    }
+
 }

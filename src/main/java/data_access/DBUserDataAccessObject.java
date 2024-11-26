@@ -251,4 +251,8 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             throw new RuntimeException(ex);
         }
     }
+
+    //TODO: Please implement this Kirill, I need this to allow viewing for pre existing quizzes in the dashboard, seperate from CreqteQuiz.
+    @Override
+    public List<Map<String, Object>> getQuizData(String username, String quizName) { return null; }
 }

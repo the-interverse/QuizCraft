@@ -2,6 +2,7 @@ package use_case.dashboard;
 
 import entity.Quiz;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DAO for the Login Use Case.
@@ -12,5 +13,7 @@ public interface DashboardDataAccessInterface {
      * @return the list of quizzes created by user.
      */
     List<String> getQuizzes(String username);
+
+    List<Map<String, Object>> getQuizData(String username, String quizName);
 }
 

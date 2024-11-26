@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
+import interface_adapter.dashboard.DashboardState;
 import interface_adapter.view_quiz.ViewQuizViewModel;
 import interface_adapter.view_quiz.ViewQuizState;
 import interface_adapter.view_quiz.ViewQuizController;
@@ -17,7 +18,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
     private ViewQuizController viewQuizController;
     private final String viewName = "ViewQuizView";
     private final ViewQuizViewModel viewQuizViewModel;
-    private final ViewQuizState state;
+    private ViewQuizState state;
     private JButton returnButton;
     private JButton takeQuizButton;
     private JLabel quizNameLabel;
@@ -35,9 +36,6 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
         this.viewQuizViewModel = viewModel;
         this.viewQuizViewModel.addPropertyChangeListener(this);
         this.state = viewModel.getState();
-
-        initUI();
-
     }
 
     public void initUI() {
@@ -184,14 +182,22 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == returnButton) {
-            ViewQuizState state = viewQuizViewModel.getState();
-            viewQuizViewModel.setState(state);
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        ViewQuizState state = (ViewQuizState) evt.getNewValue();
+
+        if ("state".equals(evt.getPropertyName())) {
+            SwingUtilities.invokeLater(() -> {
+                ViewQuizState newState = (ViewQuizState) evt.getNewValue();
+                state = newState;
+                questionDataList = state.getQuizQuestionsAndOptions();
+                initUI();
+                revalidate();
+                repaint();
+            });
+        }
     }
 
     public String getViewName() {
