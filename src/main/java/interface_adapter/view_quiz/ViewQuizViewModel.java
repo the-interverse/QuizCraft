@@ -7,7 +7,7 @@ public class ViewQuizViewModel extends ViewModel<ViewQuizState> {
     public static final String QUIZ_NAME_LABEL = "Quiz Name:";
 
     public ViewQuizViewModel() {
-        super("view quiz");
+        super("ViewQuizView");
         setState(new ViewQuizState());
     }
 }

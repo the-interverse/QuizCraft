@@ -6,6 +6,8 @@ import interface_adapter.dashboard.DashboardViewModel;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
 
+import java.util.List;
+
 /**
  * The Presenter for the Login Use Case.
  */
@@ -25,10 +27,10 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void prepareSuccessView(LoginOutputData response) {
-        // On success, switch to the logged in view.
-
+        List<String> quizzes = response.getQuizzes();
         final DashboardState dashboardState = dashboardViewModel.getState();
         dashboardState.setUsername(response.getUsername());
+        dashboardState.setQuizzes(quizzes);
         this.dashboardViewModel.setState(dashboardState);
         this.dashboardViewModel.firePropertyChanged();
 

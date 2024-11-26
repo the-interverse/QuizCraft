@@ -38,7 +38,7 @@ public class DashboardPresenter implements DashboardOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        DashboardState state = dashboardViewModel.getState();
+        final DashboardState state = dashboardViewModel.getState();
         state.setErrorMessage(errorMessage);
         dashboardViewModel.setState(state);
         dashboardViewModel.firePropertyChanged();
