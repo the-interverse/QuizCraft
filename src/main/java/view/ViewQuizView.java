@@ -22,28 +22,68 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
     private JButton takeQuizButton;
     private JLabel quizNameLabel;
     private JButton submitQuiz;
+    private JButton tryAgain;
     private final List<JRadioButton> optionButtons = new ArrayList<>();
     private final Map<Integer, Integer> userSelections = new HashMap<>();
     private List<Map<String, Object>> questionDataList;
+    private JPanel quizPanel;
+    private JScrollPane scrollPane;
+    private JPanel buttonPanel;
+    private String quizName;
 
     public ViewQuizView(ViewQuizViewModel viewModel) {
         this.viewQuizViewModel = viewModel;
         this.viewQuizViewModel.addPropertyChangeListener(this);
         this.state = viewModel.getState();
+
+        initUI();
+
+    }
+
+    public void initUI() {
+        resetUI();
+        setLayout(new BorderLayout());
+        quizPanel = new JPanel();
+        quizPanel.setLayout(new BoxLayout(quizPanel, BoxLayout.Y_AXIS));
+        scrollPane = new JScrollPane(quizPanel);
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+        setVisible(true);
         viewQuizUI();
     }
 
+    public void resetUI() {
+        removeAll();
+        optionButtons.clear();
+        userSelections.clear();
+
+        quizName = state.getQuizName();
+        quizNameLabel = new JLabel(quizName + " (Read Only)");
+
+        returnButton = new JButton("Return to Dashboard");
+        takeQuizButton = new JButton("Take Quiz");
+        submitQuiz = new JButton("Submit Quiz");
+        tryAgain = new JButton("Try Again");
+
+        returnButton.setVisible(true);
+        takeQuizButton.setVisible(true);
+        submitQuiz.setEnabled(false);
+        submitQuiz.setVisible(false);
+        tryAgain.setVisible(false);
+
+
+        for (JRadioButton button : optionButtons) {
+            //button.setEnabled(true);
+        }
+
+        revalidate();
+        repaint();
+    }
+
     public void viewQuizUI() {
-        String quizName = state.getQuizName();
-        String takingQuizStatus;
         questionDataList = state.getQuizQuestionsAndOptions();
-        setLayout(new BorderLayout());
-        JPanel quizPanel = new JPanel();
-        quizPanel.setLayout(new BoxLayout(quizPanel, BoxLayout.Y_AXIS));
-        if (state.getTakingQuizStatus()) takingQuizStatus = "(Quiz In Progress)";
-        else takingQuizStatus = "(Read Only)";
-        String header = quizName + " " + takingQuizStatus;
-        quizNameLabel = new JLabel(header);
         quizNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
         quizNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         quizPanel.add(quizNameLabel);
@@ -51,7 +91,6 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
         int questionIndex = 0;
         for (Map<String, Object> questionData : questionDataList) {
             String questionText = (String) questionData.get("question");
-            @SuppressWarnings("unchecked")
             List<String> options = (List<String>) questionData.get("answers");
             JPanel questionPanel = new JPanel();
             questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
@@ -85,16 +124,14 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
             quizPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             questionIndex++;
         }
-        JScrollPane scrollPane = new JScrollPane(quizPanel);
-        add(scrollPane, BorderLayout.CENTER);
-        returnButton = new JButton("Return to Dashboard");
-        takeQuizButton = new JButton("Take Quiz");
-        submitQuiz = new JButton("Submit Quiz");
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
         buttonPanel.add(returnButton);
         buttonPanel.add(takeQuizButton);
+        buttonPanel.add(tryAgain);
+
         returnButton.addActionListener(evt -> viewQuizController.switchToDashboardView());
+        tryAgain.addActionListener(evt -> initUI());
+
         takeQuizButton.addActionListener(evt -> {
             if (evt.getSource().equals(takeQuizButton)) {
                 userSelections.clear();
@@ -107,6 +144,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
                 for (JRadioButton button : optionButtons) {
                     button.setEnabled(true);
                 }
+                submitQuiz.setVisible(true);
                 submitQuiz.setEnabled(false);
             }
         });
@@ -119,9 +157,8 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
             String scoreText = "Your score: " + correctAnswers + "/" + totalQuestions + " (" + percentage + "%)";
             JOptionPane.showMessageDialog(null, scoreText, "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
             returnButton.setVisible(true);
+            tryAgain.setVisible(true);
         });
-        add(buttonPanel, BorderLayout.SOUTH);
-        setVisible(true);
     }
 
     private int calculateScore() {
