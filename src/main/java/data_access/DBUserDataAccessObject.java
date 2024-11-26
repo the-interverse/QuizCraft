@@ -1,6 +1,7 @@
 package data_access;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,7 +215,7 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     public List<String> getQuizzes(String username) {
         OkHttpClient client = new OkHttpClient();
 
-        String url = STORAGE_URL + "quizzes/" + ":listCollectionIds";
+        String url = STORAGE_URL + "quizzes/";
 
         Request request = new Request.Builder()
                 .url(url)
@@ -226,7 +227,21 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == SUCCESS_CODE) {
-                return List.of();
+                List<String> result = new ArrayList<>();
+                JSONArray documents = responseBody.getJSONArray("documents");
+                for (int i = 0; i < documents.length(); i++) {
+                    JSONObject document = documents.getJSONObject(i);
+                    String name = document.getString("name");
+
+                    // Extract only the document ID from the full path
+                    String documentId = name.substring(name.lastIndexOf('/') + 1);
+                    String[] parts = documentId.split("-");
+
+                    if (parts[1].equals(username)) {
+                        result.add(parts[0]);
+                    }
+                }
+                return result;
             }
             else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
