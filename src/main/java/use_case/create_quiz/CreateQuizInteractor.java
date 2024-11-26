@@ -5,7 +5,6 @@ import entity.QuizFactory;
 import entity.QuizQuestion;
 import org.jetbrains.annotations.NotNull;
 import use_case.create_quiz.parsers.TextExtractor;
-import ai_access.CohereAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
                 }
                 quizDataAccessObject.saveQuiz(quiz, username);
                 assert quiz != null;
-                final List<Map<String, List<String>>> questions = getQuestions(quiz);
+                final List<Map<String, Object>> questions = getQuestions(quiz);
                 final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
                 createQuizPresenter.prepareSuccessView(createQuizOutputData);
             } catch (Exception e) {
@@ -77,16 +76,18 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
     }
 
     @NotNull
-    private static List<Map<String, List<String>>> getQuestions(Quiz quiz) {
-        final List<Map<String, List<String>>> questions = new ArrayList<>();
+    private static List<Map<String, Object>> getQuestions(Quiz quiz) {
+        final List<Map<String, Object>> questions = new ArrayList<>();
         for (QuizQuestion question : quiz.getQuestions()){
+            Map questionInfo = new HashMap<>();
+            questionInfo.put("question", question.getQuestion());
+            questionInfo.put("correctAnswer", question.getCorrectIndex());
             List<String> answers = new ArrayList<>();
             for (Integer i = 0; i < question.getAnswers().size(); i++){
                 answers.add(question.getAnswers().get(i));
             }
-            Map questionAndAnswers = new HashMap<>();
-            questionAndAnswers.put(question.getQuestion(), answers);
-            questions.add(questionAndAnswers);
+            questionInfo.put("answers", answers);
+            questions.add(questionInfo);
         }
         return questions;
     }
