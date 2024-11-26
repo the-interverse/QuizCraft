@@ -13,6 +13,7 @@ public interface DashboardInputBoundary {
      */
     void execute(DashboardInputData DashboardInputData);
     void switchToCreateQuizView();
+    void switchToViewQuizView();
 
 }
 

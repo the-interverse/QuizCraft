@@ -168,18 +168,14 @@ public class AppBuilder {
     }
 
     public AppBuilder addLoggedInUseCase() {
-        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel, createQuizViewModel);
-        final DashboardDataAccessInterface dashboardRepository = new DashboardDataAccessInterface() {
-            @Override
-            public List<Quiz> getQuizzes(String username) {
-                return List.of();
-            }
-        };
-        final DashboardInputBoundary dashboardInteractor = new DashboardInteractor(dashboardRepository, dashboardOutputBoundary);
+        final DashboardOutputBoundary dashboardOutputBoundary = new DashboardPresenter(viewManagerModel, dashboardViewModel,
+                createQuizViewModel, viewQuizViewModel);
+        final DashboardInputBoundary dashboardInteractor = new DashboardInteractor(programDataAccessObject, dashboardOutputBoundary);
 
         final DashboardController dashboardController = new DashboardController(dashboardInteractor, viewManagerModel);
 
-        final LogoutController logoutController = new LogoutController(new LogoutInteractor(programDataAccessObject, new LogoutPresenter(viewManagerModel, dashboardViewModel, loginViewModel)));
+        final LogoutController logoutController = new LogoutController(new LogoutInteractor(programDataAccessObject,
+                new LogoutPresenter(viewManagerModel, dashboardViewModel, loginViewModel)));
 
         dashboardView.setDashboardController(dashboardController);
         dashboardView.setLogoutController(logoutController);

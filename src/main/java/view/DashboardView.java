@@ -1,6 +1,5 @@
 package view;
 
-import entity.Quiz;
 import interface_adapter.dashboard.DashboardController;
 import interface_adapter.dashboard.DashboardState;
 import interface_adapter.dashboard.DashboardViewModel;
@@ -40,7 +39,6 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
         quizzesPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(new JScrollPane(quizzesPanel), BorderLayout.CENTER);
 
-        // Buttons and User Info
         JPanel userPanel = new JPanel();
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
         usernameLabel = new JLabel("Currently logged in: ");
@@ -63,7 +61,6 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
             }
         });
 
-
         userPanel.add(usernameLabel);
         userPanel.add(Box.createVerticalStrut(10));
         userPanel.add(logOutButton);
@@ -82,7 +79,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
+        if ("state".equals(evt.getPropertyName())) {
             DashboardState newState = (DashboardState) evt.getNewValue();
             usernameLabel.setText("Currently logged in: " + newState.getUsername());
             updateQuizzes(newState.getQuizzes());
@@ -92,18 +89,29 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
     /**
      * Update the quizzes displayed in the dashboard.
      *
-     * @param quizzes the list of quizzes and their scores
+     * @param quizNames the list of quiz names
      */
-    private void updateQuizzes(List<Quiz> quizzes) {
+    private void updateQuizzes(List<String> quizNames) {
         quizzesPanel.removeAll();
 
-        for (Quiz quiz : quizzes) {
-            JLabel quizLabel = new JLabel(quiz.getName());
-            quizLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            quizzesPanel.add(quizLabel);
+        for (String quizName : quizNames) {
+            JPanel quizPanel = new JPanel();
+            quizPanel.setLayout(new BorderLayout());
 
-            JLabel scoreLabel = new JLabel("Not Available"); // Default score
-            quizzesPanel.add(scoreLabel);
+            JLabel quizLabel = new JLabel(quizName);
+            quizLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+            quizPanel.add(quizLabel, BorderLayout.WEST);
+
+            JButton viewQuizButton = new JButton("View Quiz");
+            viewQuizButton.addActionListener(evt -> {
+                System.out.println("View Quiz clicked for: " + quizName);
+                if (dashboardController != null) {
+                    dashboardController.switchToViewQuizView(quizName);
+                }
+            });
+            quizPanel.add(viewQuizButton, BorderLayout.EAST);
+
+            quizzesPanel.add(quizPanel);
         }
 
         quizzesPanel.revalidate();
@@ -118,9 +126,9 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
         this.dashboardController = dashboardController;
     }
 
-
     public void setLogoutController(LogoutController logoutController) {
         this.logoutController = logoutController;
     }
 }
+
 

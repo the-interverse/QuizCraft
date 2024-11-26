@@ -33,4 +33,7 @@ public class DashboardInteractor implements DashboardInputBoundary {
         dashboardPresenter.switchToCreateQuizView();
     }
 
+    @Override
+    public void switchToViewQuizView() {dashboardPresenter.switchToViewQuizView();}
+
 }
