@@ -31,6 +31,9 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
     private JScrollPane scrollPane;
     private JPanel buttonPanel;
     private String quizName;
+    private Color darkGray = new Color(23, 23, 23);
+    private Color black = new Color(23, 23, 23);
+    private Color white = new Color(255, 255, 255);
 
     public ViewQuizView(ViewQuizViewModel viewModel) {
         this.viewQuizViewModel = viewModel;
@@ -42,9 +45,11 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
         resetUI();
         setLayout(new BorderLayout());
         quizPanel = new JPanel();
+        quizPanel.setBackground(darkGray);
         quizPanel.setLayout(new BoxLayout(quizPanel, BoxLayout.Y_AXIS));
         scrollPane = new JScrollPane(quizPanel);
         buttonPanel = new JPanel();
+        buttonPanel.setBackground(black);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -84,6 +89,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
     public void viewQuizUI() {
         questionDataList = state.getQuizQuestionsAndOptions();
         quizNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        quizNameLabel.setForeground(Color.WHITE);
         quizNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         quizPanel.add(quizNameLabel);
         quizPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -93,10 +99,12 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
             List<String> options = (List<String>) questionData.get("answers");
             JPanel questionPanel = new JPanel();
             questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
+            questionPanel.setBackground(darkGray);
             questionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             questionPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 10));
             JLabel questionLabel = new JLabel(questionText);
             questionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            questionLabel.setForeground(Color.WHITE);
 
             ButtonGroup buttonGroup = new ButtonGroup();
             JPanel buttonsPanel = new JPanel();
@@ -113,9 +121,14 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
                     }
                 });
                 optionButton.setFont(new Font("Arial", Font.PLAIN, 14));
+                optionButton.setForeground(Color.WHITE);
+                optionButton.setBackground(darkGray);
+
+
                 optionButton.setEnabled(false);
                 buttonGroup.add(optionButton);
                 buttonsPanel.add(optionButton);
+                buttonsPanel.setBackground(darkGray);
                 optionButtons.add(optionButton);
                 optionIndex++;
             }
@@ -167,7 +180,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
         int correctAnswers = 0;
         for (int questionIndex = 0; questionIndex < questionDataList.size(); questionIndex++) {
             Map<String, Object> questionData = questionDataList.get(questionIndex);
-            int correctAnswer = (Integer) questionData.get("correctAnswer");
+            int correctAnswer = (Integer) questionData.get("correctAnswer") - 1;
             if (userSelections.getOrDefault(questionIndex, -1) == correctAnswer) {
                 correctAnswers++;
             }

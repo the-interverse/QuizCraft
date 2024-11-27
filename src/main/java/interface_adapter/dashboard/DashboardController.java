@@ -25,9 +25,9 @@ public class DashboardController {
     public void switchToCreateQuizView() {
         dashboardInteractor.switchToCreateQuizView();
     }
-    public void switchToViewQuizView(String quizName) {
+    public void switchToViewQuizView(String username, String quizName) {
         System.out.println("DashboardController: Viewing quiz " + quizName);
-        dashboardInteractor.switchToViewQuizView();
+        dashboardInteractor.switchToViewQuizView(username, quizName);
     }
 
 }

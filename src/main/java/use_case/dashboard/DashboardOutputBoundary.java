@@ -1,5 +1,8 @@
 package use_case.dashboard;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The output boundary for the Login Use Case.
  */
@@ -16,6 +19,6 @@ public interface DashboardOutputBoundary {
      */
     void prepareFailView(String errorMessage);
     void switchToCreateQuizView();
-    void switchToViewQuizView();
+    void switchToViewQuizView(List<Map<String, Object>> quizData, String quizName);
 }
 

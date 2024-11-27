@@ -21,6 +21,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
     private final JLabel usernameLabel;
     private final JPanel quizzesPanel = new JPanel();
     private final JLabel titleLabel = new JLabel("Dashboard - Your Quizzes", SwingConstants.CENTER);
+    private String username;
 
     private final JButton logOutButton;
     private final JButton createQuizButton;
@@ -82,6 +83,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
         if ("state".equals(evt.getPropertyName())) {
             DashboardState newState = (DashboardState) evt.getNewValue();
             usernameLabel.setText("Currently logged in: " + newState.getUsername());
+            username = newState.getUsername();
             updateQuizzes(newState.getQuizzes());
         }
     }
@@ -106,7 +108,7 @@ public class DashboardView extends JPanel implements PropertyChangeListener {
             viewQuizButton.addActionListener(evt -> {
                 System.out.println("View Quiz clicked for: " + quizName);
                 if (dashboardController != null) {
-                    dashboardController.switchToViewQuizView(quizName);
+                    dashboardController.switchToViewQuizView(username, quizName);
                 }
             });
             quizPanel.add(viewQuizButton, BorderLayout.EAST);

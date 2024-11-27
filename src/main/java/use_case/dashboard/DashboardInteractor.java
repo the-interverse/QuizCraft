@@ -2,6 +2,7 @@ package use_case.dashboard;
 
 import entity.Quiz;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Dashboard Interactor.
@@ -34,6 +35,9 @@ public class DashboardInteractor implements DashboardInputBoundary {
     }
 
     @Override
-    public void switchToViewQuizView() {dashboardPresenter.switchToViewQuizView();}
+    public void switchToViewQuizView(String username, String quizName) {
+        List<Map<String, Object>> quizData = dashboardDataAccessObject.getQuizData(username, quizName);
+        dashboardPresenter.switchToViewQuizView(quizData, quizName);
+    }
 
 }
