@@ -59,6 +59,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
 
         quizName = state.getQuizName();
         quizNameLabel = new JLabel(quizName + " (Read Only)");
+        quizNameLabel.setBorder(BorderFactory.createEmptyBorder(50, 50, 10, 10));
 
         returnButton = new JButton("Return to Dashboard");
         takeQuizButton = new JButton("Take Quiz");
@@ -82,8 +83,8 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
 
     public void viewQuizUI() {
         questionDataList = state.getQuizQuestionsAndOptions();
-        quizNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        quizNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        quizNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        quizNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         quizPanel.add(quizNameLabel);
         quizPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         int questionIndex = 0;
@@ -92,13 +93,14 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
             List<String> options = (List<String>) questionData.get("answers");
             JPanel questionPanel = new JPanel();
             questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
-            questionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            questionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            questionPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 10));
             JLabel questionLabel = new JLabel(questionText);
             questionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-            questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
             ButtonGroup buttonGroup = new ButtonGroup();
             JPanel buttonsPanel = new JPanel();
-            buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
             int optionIndex = 0;
             for (String option : options) {
                 JRadioButton optionButton = new JRadioButton(option.trim());
@@ -110,6 +112,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
                         submitQuiz.setEnabled(true);
                     }
                 });
+                optionButton.setFont(new Font("Arial", Font.PLAIN, 14));
                 optionButton.setEnabled(false);
                 buttonGroup.add(optionButton);
                 buttonsPanel.add(optionButton);
@@ -126,6 +129,7 @@ public class ViewQuizView extends JPanel implements ActionListener, PropertyChan
         buttonPanel.add(returnButton);
         buttonPanel.add(takeQuizButton);
         buttonPanel.add(tryAgain);
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         returnButton.addActionListener(evt -> viewQuizController.switchToDashboardView());
         tryAgain.addActionListener(evt -> initUI());
