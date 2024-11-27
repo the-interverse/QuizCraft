@@ -73,12 +73,10 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
                 final String password = userJSONObject.getJSONObject(PASSWORD).getString("stringValue");
 
                 return userFactory.create(name, password);
-            }
-            else {
+            } else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
             }
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -100,12 +98,12 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         try {
             final Response response = client.newCall(request).execute();
             return response.code() == SUCCESS_CODE;
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
-// "https://quizcraft-eb0a5.firebaseio.com"
+
+    // "https://quizcraft-eb0a5.firebaseio.com"
 // "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key="
     @Override
     public void save(User user) {
@@ -127,12 +125,10 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
 
             if (response.code() == SUCCESS_CODE) {
                 // success!
-            }
-            else {
+            } else {
                 throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
             }
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -201,12 +197,10 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
 
             if (response.code() == SUCCESS_CODE) {
 //                success
-            }
-            else {
+            } else {
                 throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
             }
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -242,17 +236,71 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
                     }
                 }
                 return result;
-            }
-            else {
+            } else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
             }
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     //TODO: Please implement this Kirill, I need this to allow viewing for pre existing quizzes in the dashboard, seperate from CreqteQuiz.
     @Override
-    public List<Map<String, Object>> getQuizData(String username, String quizName) { return null; }
+    public List<Map<String, Object>> getQuizData(String username, String quizName) {
+        OkHttpClient client = new OkHttpClient();
+
+        String url = STORAGE_URL + "quizzes/";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            final Response response = client.newCall(request).execute();
+
+            final JSONObject responseBody = new JSONObject(response.body().string());
+
+            if (response.code() == SUCCESS_CODE) {
+                List<Map<String, Object>> result = new ArrayList<>();
+                JSONArray documents = responseBody.getJSONArray("documents");
+                for (int i = 0; i < documents.length(); i++) {
+                    JSONObject document = documents.getJSONObject(i);
+                    String name = document.getString("name");
+
+                    // Extract only the document ID from the full path
+                    String documentId = name.substring(name.lastIndexOf('/') + 1);
+                    String[] parts = documentId.split("-");
+
+                    if (parts[1].equals(username) && parts[0].equals(quizName)) {
+                        final JSONObject quizJSONObject = document.getJSONObject("fields").getJSONObject("quizQuestions");
+                        List<Map<String, Object>> quizQuestion = cleanUpFirebaseJson(quizJSONObject);
+                        return quizQuestion;
+                    }
+                }
+            }
+        } catch (IOException | JSONException ex) {
+            throw new RuntimeException(ex);
+        }
+        return null;
+    }
+
+    private static List<Map<String, Object>> cleanUpFirebaseJson(JSONObject jsonObject) {
+        JSONArray questions = jsonObject.getJSONObject("arrayValue").getJSONArray("values");
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Object question : questions){
+            Map<String, Object> questionInfo = new HashMap<>();
+            String text = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("question").getString("stringValue");
+            Integer correctIndex = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("correctAnswer").getInt("integerValue");
+            JSONArray answers = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("answers").getJSONObject("arrayValue").getJSONArray("values");
+            List<String> answersText = new ArrayList<>();
+            for (Object answer : answers){
+                answersText.add(((JSONObject) answer).getString("stringValue"));
+            }
+            questionInfo.put("question", text);
+            questionInfo.put("correctAnswer", correctIndex);
+            questionInfo.put("answers", answersText);
+            result.add(questionInfo);
+        }
+        return result;
+    }
 }
