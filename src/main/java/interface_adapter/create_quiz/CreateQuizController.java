@@ -4,6 +4,7 @@ import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizInputData;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CreateQuizController {
     private final CreateQuizInputBoundary createQuizInteractor;
@@ -17,7 +18,7 @@ public class CreateQuizController {
         createQuizInteractor.execute(inputData);
     }
 
-    public void switchToDashboardView() {
-        createQuizInteractor.switchToDashboardView();
+    public void switchToDashboardView(String username) {
+        createQuizInteractor.switchToDashboardView(username);
     }
 }

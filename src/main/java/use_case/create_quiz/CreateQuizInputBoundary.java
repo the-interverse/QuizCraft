@@ -12,6 +12,6 @@ public interface CreateQuizInputBoundary {
      */
     void execute(CreateQuizInputData CreateQuizInputData);
 
-    void switchToDashboardView();
+    void switchToDashboardView(String username);
 
 }

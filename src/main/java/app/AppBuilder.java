@@ -140,7 +140,7 @@ public class AppBuilder {
 
     public AppBuilder addCreateQuizView() {
         createQuizViewModel = new CreateQuizViewModel();
-        createQuizView = new CreateQuizView(createQuizViewModel);
+        createQuizView = new CreateQuizView(createQuizViewModel, dashboardViewModel);
         cardPanel.add(createQuizView, createQuizView.getViewName());
         return this;
     }

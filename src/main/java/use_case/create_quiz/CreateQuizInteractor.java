@@ -93,7 +93,9 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
     }
 
     @Override
-    public void switchToDashboardView() {
-        createQuizPresenter.switchToDashboardView();
+    public void switchToDashboardView(String username) {
+        List<String> quizzes = quizDataAccessObject.getQuizzes(username);
+        System.out.println("test"+ quizzes + "and" + username);
+        createQuizPresenter.switchToDashboardView(quizzes);
     }
 }

@@ -1,5 +1,7 @@
 package use_case.create_quiz;
 
+import java.util.List;
+
 /**
  * The output boundary for the Login Use Case.
  */
@@ -16,6 +18,6 @@ public interface CreateQuizOutputBoundary {
      */
     void prepareFailView(String errorMessage);
 
-    void switchToDashboardView();
+    void switchToDashboardView(List<String> quizzes);
 
 }

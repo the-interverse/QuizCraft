@@ -2,6 +2,8 @@ package use_case.create_quiz;
 
 import entity.Quiz;
 
+import java.util.List;
+
 /**
  * DAO for the Login Use Case.
  */
@@ -22,4 +24,6 @@ public interface CreateQuizDataAccessInterface {
      * @param username username of the user who created the quiz
      */
     void saveQuiz(Quiz quiz, String username);
+    List<String> getQuizzes(String username);
+
 }

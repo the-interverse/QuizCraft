@@ -1,9 +1,12 @@
 package interface_adapter.create_quiz;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.dashboard.DashboardState;
 import interface_adapter.dashboard.DashboardViewModel;
 import interface_adapter.view_quiz.ViewQuizViewModel;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
+
+import java.util.List;
 
 public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
@@ -46,7 +49,11 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
     }
 
     @Override
-    public void switchToDashboardView() {
+    public void switchToDashboardView(List<String> quizzes) {
+        DashboardState state = dashboardViewModel.getState();
+        state.setQuizzes(quizzes);
+        dashboardViewModel.setState(state);
+        dashboardViewModel.firePropertyChanged();
         viewManagerModel.setState(dashboardViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }

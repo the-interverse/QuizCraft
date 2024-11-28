@@ -13,12 +13,14 @@ import java.util.Enumeration;
 import interface_adapter.create_quiz.CreateQuizViewModel;
 import interface_adapter.create_quiz.CreateQuizState;
 import interface_adapter.create_quiz.CreateQuizController;
+import interface_adapter.dashboard.DashboardViewModel;
 import interface_adapter.login.LoginState;
 
 public class CreateQuizView extends JPanel implements ActionListener, PropertyChangeListener {
     private CreateQuizController createQuizController;
     private final String viewName = "createQuiz";
     private final CreateQuizViewModel createQuizViewModel;
+    private final DashboardViewModel dashboardViewModel;
     private JTextField quizNameField;
     private JTextField questionAmountField;
     private ButtonGroup difficultyGroup;
@@ -26,8 +28,9 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
     private JButton createButton;
     private JButton cancelButton;
 
-    public CreateQuizView(CreateQuizViewModel viewModel) {
+    public CreateQuizView(CreateQuizViewModel viewModel, DashboardViewModel dashboardViewModel) {
         this.createQuizViewModel = viewModel;
+        this.dashboardViewModel = dashboardViewModel;
         this.createQuizViewModel.addPropertyChangeListener(this);
         initializeUI();
     }
@@ -74,7 +77,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
         });
 
         createButton = new JButton("Create");
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Return to Dashboard");
         createButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
@@ -88,6 +91,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
                                     currentState.getPdfFileName(),
                                     currentState.getUsername()
                             );
+                            System.out.println(currentState.getUsername());
                         }
                     }
                 });
@@ -96,7 +100,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource() == cancelButton) {
                             resetFields();
-                            createQuizController.switchToDashboardView();
+                            createQuizController.switchToDashboardView(dashboardViewModel.getState().getUsername());
                         }
                     }
                 });
@@ -140,19 +144,6 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
         add(cancelButton);
     }
 
-//    private void handlePDFUpload() {
-//        if (evt.getSource().equals(logIn)) {
-//            JFileChooser fileChooser = new JFileChooser();
-//            fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
-//            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-//                File selectedPDF = fileChooser.getSelectedFile();
-//                pdfLabel.setText(selectedPDF.getName());
-//                CreateQuizState state = createQuizViewModel.getState();
-//                state.setPdfFileName(selectedPDF.getAbsolutePath());
-//                createQuizViewModel.setState(state);
-//            }
-//        }
-//    }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
@@ -169,7 +160,7 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
 //            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
         } else if (evt.getSource() == cancelButton) {
             resetFields();
-            createQuizController.switchToDashboardView();
+            createQuizController.switchToDashboardView(createQuizViewModel.getState().getUsername());
         }
     }
 
