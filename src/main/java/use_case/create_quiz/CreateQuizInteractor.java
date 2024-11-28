@@ -37,8 +37,9 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         final Integer numQuestions = createQuizInputData.getNumQuestions();
         final String difficulty = createQuizInputData.getDifficulty();
         final String filePath = createQuizInputData.getFilepath();
-//        final String username = createQuizInputData.getUsername();
-        final String username = "kirill";
+        final String username = createQuizInputData.getUsername();
+        //final String username = "kirill";
+        System.out.println(username);
         if (quizName == null || quizName.isEmpty()) {
             createQuizPresenter.prepareFailView("Quiz name cannot be empty. Please choose another name.");
         }

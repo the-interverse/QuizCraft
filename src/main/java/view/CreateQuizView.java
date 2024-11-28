@@ -89,9 +89,8 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
                                     currentState.getQuestionAmount(),
                                     currentState.getDifficulty(),
                                     currentState.getPdfFileName(),
-                                    currentState.getUsername()
+                                    dashboardViewModel.getState().getUsername()
                             );
-                            System.out.println(currentState.getUsername());
                         }
                     }
                 });
@@ -122,7 +121,16 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
             public void changedUpdate(DocumentEvent e) { updateQuestionAmount(); }
             private void updateQuestionAmount() {
                 CreateQuizState state = createQuizViewModel.getState();
-                state.setQuestionAmount(Integer.parseInt(questionAmountField.getText()));
+                String text = questionAmountField.getText();
+                if (text.isEmpty()) {
+                    state.setQuestionAmount(0);
+                } else {
+                    try {
+                        state.setQuestionAmount(Integer.parseInt(text));
+                    } catch (NumberFormatException e) {
+                        state.setQuestionAmount(0);
+                    }
+                }
                 createQuizViewModel.setState(state);
             }
         });
@@ -147,21 +155,6 @@ public class CreateQuizView extends JPanel implements ActionListener, PropertyCh
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() == createButton) {
-            final CreateQuizState currentState = createQuizViewModel.getState();
-            currentState.setDifficulty(getSelectedDifficulty());
-            createQuizController.execute(
-                    currentState.getQuizName(),
-                    currentState.getQuestionAmount(),
-                    currentState.getDifficulty(),
-                    currentState.getPdfFileName(),
-                    currentState.getUsername()
-            );
-//            viewModel.setState(state); // Trigger quiz creation via ViewModel updates
-        } else if (evt.getSource() == cancelButton) {
-            resetFields();
-            createQuizController.switchToDashboardView(createQuizViewModel.getState().getUsername());
-        }
     }
 
     private void resetFields() {
