@@ -30,8 +30,6 @@ Supports user-friendly dashboard features for managing and taking quizzes.
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
-    - [System Requirements](#system-requirements)
-    - [Steps to Install](#steps-to-install)
 - [Usage Guide](#usage-guide)
 - [License](#license)
 - [Feedback](#feedback)
