@@ -1,9 +1,8 @@
 package interface_adapter.dashboard;
 
 import interface_adapter.ViewManagerModel;
-import entity.Quiz;
 import interface_adapter.create_quiz.CreateQuizViewModel;
-import interface_adapter.view_quiz.ViewQuizViewModel;
+import interface_adapter.view_and_take_quiz.ViewQuizViewModel;
 import use_case.dashboard.DashboardOutputBoundary;
 import use_case.dashboard.DashboardOutputData;
 

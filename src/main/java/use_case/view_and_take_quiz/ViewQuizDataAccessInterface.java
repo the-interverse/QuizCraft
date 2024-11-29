@@ -1,6 +1,4 @@
-package use_case.view_quiz;
-
-import entity.Quiz;
+package use_case.view_and_take_quiz;
 
 /**
  * DAO for the ViewQuiz Use Case.

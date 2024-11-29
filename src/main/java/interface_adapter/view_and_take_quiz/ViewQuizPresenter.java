@@ -1,9 +1,9 @@
-package interface_adapter.view_quiz;
+package interface_adapter.view_and_take_quiz;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.dashboard.DashboardViewModel;
-import use_case.view_quiz.ViewQuizOutputBoundary;
-import use_case.view_quiz.ViewQuizOutputData;
+import use_case.view_and_take_quiz.ViewQuizOutputBoundary;
+import use_case.view_and_take_quiz.ViewQuizOutputData;
 
 public class ViewQuizPresenter implements ViewQuizOutputBoundary {
 

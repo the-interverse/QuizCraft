@@ -1,7 +1,5 @@
-package use_case.view_quiz;
-import entity.Quiz;
+package use_case.view_and_take_quiz;
 
-import java.util.ArrayList;
 /**
  * The ViewQuiz Interactor.
  */

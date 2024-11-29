@@ -1,4 +1,4 @@
-package interface_adapter.view_quiz;
+package interface_adapter.view_and_take_quiz;
 
 import interface_adapter.ViewModel;
 

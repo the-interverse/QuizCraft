@@ -1,7 +1,6 @@
 package app;
 
 import java.awt.CardLayout;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,7 +8,6 @@ import javax.swing.WindowConstants;
 
 import ai_access.CohereAPI;
 import data_access.DBUserDataAccessObject;
-import entity.Quiz;
 import entity.QuizFactory;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
@@ -27,7 +25,6 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 
-import use_case.dashboard.DashboardDataAccessInterface;
 import use_case.dashboard.DashboardInputBoundary;
 import use_case.dashboard.DashboardInteractor;
 import use_case.dashboard.DashboardOutputBoundary;
@@ -52,12 +49,12 @@ import use_case.create_quiz.CreateQuizInteractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 
-import interface_adapter.view_quiz.ViewQuizController;
-import interface_adapter.view_quiz.ViewQuizPresenter;
-import interface_adapter.view_quiz.ViewQuizViewModel;
-import use_case.view_quiz.ViewQuizInteractor;
-import use_case.view_quiz.ViewQuizInputBoundary;
-import use_case.view_quiz.ViewQuizOutputBoundary;
+import interface_adapter.view_and_take_quiz.ViewQuizController;
+import interface_adapter.view_and_take_quiz.ViewQuizPresenter;
+import interface_adapter.view_and_take_quiz.ViewQuizViewModel;
+import use_case.view_and_take_quiz.ViewQuizInteractor;
+import use_case.view_and_take_quiz.ViewQuizInputBoundary;
+import use_case.view_and_take_quiz.ViewQuizOutputBoundary;
 
 import view.*;
 

@@ -9,10 +9,9 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
-import interface_adapter.dashboard.DashboardState;
-import interface_adapter.view_quiz.ViewQuizViewModel;
-import interface_adapter.view_quiz.ViewQuizState;
-import interface_adapter.view_quiz.ViewQuizController;
+import interface_adapter.view_and_take_quiz.ViewQuizViewModel;
+import interface_adapter.view_and_take_quiz.ViewQuizState;
+import interface_adapter.view_and_take_quiz.ViewQuizController;
 
 public class ViewQuizView extends JPanel implements ActionListener, PropertyChangeListener {
     private ViewQuizController viewQuizController;

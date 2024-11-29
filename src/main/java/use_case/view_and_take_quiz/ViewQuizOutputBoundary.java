@@ -1,4 +1,4 @@
-package use_case.view_quiz;
+package use_case.view_and_take_quiz;
 
 /**
  * The output boundary for the ViewQuiz Use Case.
