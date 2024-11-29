@@ -20,6 +20,11 @@ public class DashboardInteractor implements DashboardInputBoundary {
 
     @Override
     public void execute(DashboardInputData dashboardInputData) {
+        String username = dashboardInputData.getUsername();
+        if (username == null || username.isEmpty()) {
+            dashboardPresenter.prepareFailView("Invalid username.");
+            return;
+        }
         List<String> quizzes = dashboardDataAccessObject.getQuizzes(dashboardInputData.getUsername());
         if (quizzes.isEmpty()) {
             dashboardPresenter.prepareFailView("No quizzes found.");
