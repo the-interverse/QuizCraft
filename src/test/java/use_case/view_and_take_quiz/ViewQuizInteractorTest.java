@@ -7,7 +7,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ViewQuizInteractorTest {
-
     @Test
     void executeSuccessTest() {
         List<Map<String, Object>> questionsAndOptions = new ArrayList<>();
@@ -31,9 +30,7 @@ class ViewQuizInteractorTest {
         questionsAndOptions.add(question3);
 
         ViewQuizInputData inputData = new ViewQuizInputData(questionsAndOptions, "Yasser", "Git Quiz");
-        ViewQuizDataAccessInterface mockDataAccess = new ViewQuizDataAccessInterface() {};
-
-        ViewQuizOutputBoundary mockPresenter = new ViewQuizOutputBoundary() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
             @Override
             public void prepareSuccessView(ViewQuizOutputData outputData) {
                 assertEquals(3, outputData.getQuestionsAndOptions().size());
@@ -54,15 +51,173 @@ class ViewQuizInteractorTest {
             }
         };
 
-        ViewQuizInputBoundary interactor = new ViewQuizInteractor(mockPresenter);
+        ViewQuizInputBoundary interactor = new ViewQuizInteractor(presenter);
         interactor.execute(inputData);
     }
 
     @Test
-    void switchToDashboardViewTest() {
-        ViewQuizDataAccessInterface mockDataAccess = new ViewQuizDataAccessInterface() {};
+    void executeQuizNameNullTest() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                assertEquals("Quiz name cannot be empty.", message);
+            }
 
-        ViewQuizOutputBoundary mockPresenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareSuccessView(ViewQuizOutputData outputData) {
+                fail("This case should not succeed.");
+            }
+
+            @Override
+            public void switchToDashboardView() {}
+        };
+        ViewQuizInteractor interactor = new ViewQuizInteractor(presenter);
+
+        List<Map<String, Object>> questionsAndOptions = new ArrayList<>();
+        Map<String, Object> question1 = new HashMap<>();
+        question1.put("question", "Sample Question");
+        question1.put("answers", Arrays.asList("Option A", "Option B", "Option C", "Option D"));
+        question1.put("correctAnswer", 0);
+        questionsAndOptions.add(question1);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(questionsAndOptions, "Yasser", null);
+
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void executeQuizNameEmpty() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                assertEquals("Quiz name cannot be empty.", message);
+            }
+
+            @Override
+            public void prepareSuccessView(ViewQuizOutputData outputData) {
+                fail("This case should not succeed.");
+            }
+
+            @Override
+            public void switchToDashboardView() {}
+        };
+        ViewQuizInteractor interactor = new ViewQuizInteractor(presenter);
+
+        List<Map<String, Object>> questionsAndOptions = new ArrayList<>();
+        Map<String, Object> question1 = new HashMap<>();
+        question1.put("question", "Sample Question");
+        question1.put("answers", Arrays.asList("Option A", "Option B", "Option C", "Option D"));
+        question1.put("correctAnswer", 0);
+        questionsAndOptions.add(question1);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(questionsAndOptions, "Yasser", "");
+
+        interactor.execute(inputData);
+    }
+
+
+    @Test
+    void executeQuestionsAndOptionsNull() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                assertEquals("Quiz questions cannot be empty.", message);
+            }
+
+            @Override
+            public void prepareSuccessView(ViewQuizOutputData outputData) {
+                fail("This case should not succeed.");
+            }
+
+            @Override
+            public void switchToDashboardView() {}
+        };
+        ViewQuizInteractor interactor = new ViewQuizInteractor(presenter);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(null, "Yasser", "Git Quiz");
+
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void executeQuestionsAndOptionsEmpty() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                assertEquals("Quiz questions cannot be empty.", message);
+            }
+
+            @Override
+            public void prepareSuccessView(ViewQuizOutputData outputData) {
+                fail("This case should not succeed.");
+            }
+
+            @Override
+            public void switchToDashboardView() {}
+        };
+        ViewQuizInteractor interactor = new ViewQuizInteractor(presenter);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(new ArrayList<>(), "Yasser", "Git Quiz");
+
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void executeValidInputTest() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                fail("This case should not fail.");
+            }
+
+            @Override
+            public void prepareSuccessView(ViewQuizOutputData outputData) {
+                assertEquals("Git Quiz", outputData.getQuizName());
+                assertEquals(2, outputData.getQuestionsAndOptions().size());
+            }
+
+            @Override
+            public void switchToDashboardView() {}
+        };
+        ViewQuizInteractor interactor = new ViewQuizInteractor(presenter);
+
+        List<Map<String, Object>> questionsAndOptions = new ArrayList<>();
+        Map<String, Object> question1 = new HashMap<>();
+        question1.put("question", "What is the purpose of version control?");
+        question1.put("answers", Arrays.asList("Option A", "Option B", "Option C", "Option D"));
+        question1.put("correctAnswer", 0);
+
+        Map<String, Object> question2 = new HashMap<>();
+        question2.put("question", "Which command is used to add changes?");
+        question2.put("answers", Arrays.asList("Option A", "Option B", "Option C", "Option D"));
+        question2.put("correctAnswer", 0);
+
+        questionsAndOptions.add(question1);
+        questionsAndOptions.add(question2);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(questionsAndOptions, "Yasser", "Git Quiz");
+
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void getUsernameTest() {
+        List<Map<String, Object>> questionsAndOptions = new ArrayList<>();
+        Map<String, Object> question = new HashMap<>();
+        question.put("question", "Sample Question");
+        question.put("answers", Arrays.asList("Option A", "Option B", "Option C", "Option D"));
+        question.put("correctAnswer", 0);
+        questionsAndOptions.add(question);
+
+        ViewQuizInputData inputData = new ViewQuizInputData(questionsAndOptions, "Yasser", "Git Quiz");
+
+        assertEquals("Yasser", inputData.getUsername());
+    }
+
+
+    @Test
+    void switchToDashboardViewTest() {
+        ViewQuizOutputBoundary presenter = new ViewQuizOutputBoundary() {
             @Override
             public void prepareSuccessView(ViewQuizOutputData outputData) {
                 fail("Success is not expected.");
@@ -77,7 +232,7 @@ class ViewQuizInteractorTest {
             public void switchToDashboardView() {}
         };
 
-        ViewQuizInputBoundary interactor = new ViewQuizInteractor(mockPresenter);
+        ViewQuizInputBoundary interactor = new ViewQuizInteractor(presenter);
         interactor.switchToDashboardView();
     }
 }

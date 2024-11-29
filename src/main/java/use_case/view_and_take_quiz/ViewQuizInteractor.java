@@ -15,7 +15,7 @@ public class ViewQuizInteractor implements ViewQuizInputBoundary {
         if (viewQuizInputData.getQuizName() == null || viewQuizInputData.getQuizName().isEmpty()) {
             viewQuizPresenter.prepareFailView("Quiz name cannot be empty.");
             return;
-        } else if (viewQuizInputData.getQuizName() == null || viewQuizInputData.getQuizName().isEmpty()) {
+        } else if (viewQuizInputData.getQuestionsAndOptions() == null || viewQuizInputData.getQuestionsAndOptions().isEmpty()) {
             viewQuizPresenter.prepareFailView("Quiz questions cannot be empty.");
             return;
         }
