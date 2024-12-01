@@ -1,7 +1,5 @@
 package use_case.dashboard;
 
-import entity.Quiz;
-
 import java.util.List;
 
 /**
@@ -20,7 +18,9 @@ public class DashboardInputData {
     String getUsername() {
         return username;
     }
-    List<String> getQuizzes() {return quizzes;}
 
+    List<String> getQuizzes() {
+        return quizzes;
+    }
 
 }

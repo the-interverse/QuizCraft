@@ -94,10 +94,8 @@ class DashboardInteractorTest {
             }
         };
 
-        // Create the interactor with mocked dependencies
         DashboardInputBoundary interactor = new DashboardInteractor(mockDataAccess, mockPresenter);
 
-        // Execute the interactor with the test input data
         interactor.execute(inputData);
     }
 
@@ -222,6 +220,44 @@ class DashboardInteractorTest {
         DashboardInputBoundary interactor = new DashboardInteractor(mockDataAccess, mockPresenter);
         interactor.execute(inputData);
     }
+
+        @Test
+        void testValidInputData() {
+            List<String> quizzes = List.of("Quiz1", "Quiz2");
+            DashboardInputData inputData = new DashboardInputData("Egor", quizzes);
+
+            assertEquals("Egor", inputData.getUsername());
+            assertEquals(2, inputData.getQuizzes().size());
+            assertTrue(inputData.getQuizzes().contains("Quiz1"));
+            assertTrue(inputData.getQuizzes().contains("Quiz2"));
+        }
+
+        @Test
+        void testEmptyQuizzes() {
+            List<String> quizzes = List.of();
+            DashboardInputData inputData = new DashboardInputData("Egor", quizzes);
+
+            assertEquals("Egor", inputData.getUsername());
+            assertTrue(inputData.getQuizzes().isEmpty());
+        }
+
+        @Test
+        void testNullQuizzes() {
+            DashboardInputData inputData = new DashboardInputData("Egor", null);
+
+            assertEquals("Egor", inputData.getUsername());
+            assertNull(inputData.getQuizzes());
+        }
+
+        @Test
+        void testNullUsername() {
+            List<String> quizzes = List.of("Quiz1");
+            DashboardInputData inputData = new DashboardInputData(null, quizzes);
+
+            assertNull(inputData.getUsername());
+            assertEquals(1, inputData.getQuizzes().size());
+            assertTrue(inputData.getQuizzes().contains("Quiz1"));
+        }
 
 }
 

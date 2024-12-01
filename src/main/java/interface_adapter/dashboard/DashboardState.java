@@ -14,10 +14,14 @@ public class DashboardState {
     public List<String> getQuizzes() {
         return quizNames;
     }
+    /**
+     * The state for the Dashboard View.
+     * @param quizzes quizzes
+     */
 
-    public void setQuizzes(List<String> quizNames) {
+    public void setQuizzes(List<String> quizzes) {
         this.quizNames.clear();
-        this.quizNames.addAll(quizNames);
+        this.quizNames.addAll(quizzes);
     }
 
     public String getErrorMessage() {
