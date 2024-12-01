@@ -25,12 +25,6 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-import interface_adapter.view_quiz.ViewQuizController;
-import interface_adapter.view_quiz.ViewQuizPresenter;
-import interface_adapter.view_quiz.ViewQuizViewModel;
-import use_case.create_quiz.CreateQuizInputBoundary;
-import use_case.create_quiz.CreateQuizInteractor;
-import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.dashboard.DashboardInputBoundary;
 import use_case.dashboard.DashboardInteractor;
 import use_case.dashboard.DashboardOutputBoundary;
@@ -43,15 +37,21 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
-import use_case.view_quiz.ViewQuizInputBoundary;
-import use_case.view_quiz.ViewQuizInteractor;
-import use_case.view_quiz.ViewQuizOutputBoundary;
-import view.CreateQuizView;
-import view.DashboardView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
-import view.ViewQuizView;
+import interface_adapter.dashboard.DashboardViewModel;
+import interface_adapter.create_quiz.CreateQuizController;
+import interface_adapter.create_quiz.CreateQuizPresenter;
+import interface_adapter.create_quiz.CreateQuizViewModel;
+import use_case.create_quiz.CreateQuizInteractor;
+import use_case.create_quiz.CreateQuizInputBoundary;
+import use_case.create_quiz.CreateQuizOutputBoundary;
+import interface_adapter.view_and_take_quiz.ViewQuizController;
+import interface_adapter.view_and_take_quiz.ViewQuizPresenter;
+import interface_adapter.view_and_take_quiz.ViewQuizViewModel;
+import use_case.view_and_take_quiz.ViewQuizInteractor;
+import use_case.view_and_take_quiz.ViewQuizInputBoundary;
+import use_case.view_and_take_quiz.ViewQuizOutputBoundary;
+
+import view.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of

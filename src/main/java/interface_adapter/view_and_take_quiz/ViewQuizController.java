@@ -1,7 +1,7 @@
-package interface_adapter.view_quiz;
+package interface_adapter.view_and_take_quiz;
 
-import use_case.view_quiz.ViewQuizInputBoundary;
-import use_case.view_quiz.ViewQuizInputData;
+import use_case.view_and_take_quiz.ViewQuizInputBoundary;
+import use_case.view_and_take_quiz.ViewQuizInputData;
 
 import java.util.List;
 import java.util.Map;

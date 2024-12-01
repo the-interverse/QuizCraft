@@ -1,7 +1,5 @@
 package use_case.dashboard;
 
-import entity.Quiz;
-
 import java.util.List;
 
 /**
@@ -14,6 +12,7 @@ public class DashboardOutputData {
     public DashboardOutputData(List<String> quizzes) {
         this.quizzes = quizzes;
     }
+
     public List<String> getQuizzes() {
         return quizzes;
     }

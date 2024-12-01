@@ -1,4 +1,4 @@
-package use_case.view_quiz;
+package use_case.view_and_take_quiz;
 
 /**
  * Input Boundary for actions which are related to ViewQuiz.
