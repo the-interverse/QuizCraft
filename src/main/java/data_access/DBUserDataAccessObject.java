@@ -6,19 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entity.Quiz;
-import entity.QuizQuestion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import entity.Quiz;
+import entity.QuizQuestion;
+import entity.User;
+import entity.UserFactory;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import entity.UserFactory;
-import entity.User;
 import use_case.create_quiz.CreateQuizDataAccessInterface;
 import use_case.dashboard.DashboardDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -34,21 +34,28 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         CreateQuizDataAccessInterface,
         DashboardDataAccessInterface {
     private static final int SUCCESS_CODE = 200;
-    private static final int ERROR_CODE = 400;
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
     private static final String CONTENT_TYPE_JSON = "application/json";
-    private static final String STATUS_CODE_LABEL = "status_code";
     private static final String USERNAME = "username";
+    private static final String FIELDS = "fields";
+    private static final String STRINGVALUE = "stringValue";
     private static final String QUIZNAME = "quizName";
+    private static final String QUESTION = "question";
+    private static final String CORRECTANSWER = "correctAnswer";
+    private static final String ARRAYVALUE = "arrayValue";
+    private static final String CONNECT = "-";
+    private static final String ANSWERS = "answers";
+    private static final String VALUES = "values";
+    private static final String MAPVALUE = "mapValue";
+    private static final String QUIZZES_URL = "quizzes/";
+
     private static final String PASSWORD = "password";
     private static final String QUIZ_QUESTIONS = "quizQuestions";
     private static final String MESSAGE = "message";
-    private static final String STORAGE_URL = "https://firestore.googleapis.com/v1/projects/quizcraft-eb0a5/databases/(default)/documents/";
+    private static final String STORAGE_URL =
+        "https://firestore.googleapis.com/v1/projects/quizcraft-eb0a5/databases/(default)/documents/";
     private static final String PATH_TO_USERS = "users/";
-    private static final String RETURN_SECURE_TOKEN = "returnSecureToken";
-    private static final String API_KEY = "AIzaSyA7152q13udjy3Z5mxNNH1BX7EkmE2GFCQ";
     private final UserFactory userFactory;
-    private final Map<String, String> userTokenStorage = new HashMap<>();
 
     public DBUserDataAccessObject(UserFactory userFactory) {
         this.userFactory = userFactory;
@@ -60,7 +67,7 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final Request request = new Request.Builder()
                 .url(STORAGE_URL + PATH_TO_USERS + username)
-                .addHeader("Content-Type", CONTENT_TYPE_JSON)
+                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
                 .build();
         try {
             final Response response = client.newCall(request).execute();
@@ -68,15 +75,17 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == SUCCESS_CODE) {
-                final JSONObject userJSONObject = responseBody.getJSONObject("fields");
-                final String name = userJSONObject.getJSONObject(USERNAME).getString("stringValue");
-                final String password = userJSONObject.getJSONObject(PASSWORD).getString("stringValue");
+                final JSONObject userJSONObject = responseBody.getJSONObject(FIELDS);
+                final String name = userJSONObject.getJSONObject(USERNAME).getString(STRINGVALUE);
+                final String password = userJSONObject.getJSONObject(PASSWORD).getString(STRINGVALUE);
 
                 return userFactory.create(name, password);
-            } else {
+            }
+            else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
             }
-        } catch (IOException | JSONException ex) {
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -90,28 +99,28 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
     public boolean existsByName(String username) {
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
-        final RequestBody body = RequestBody.create(null, new byte[]{});
         final Request request = new Request.Builder()
                 .url(STORAGE_URL + PATH_TO_USERS + username)
-                .addHeader("Content-Type", CONTENT_TYPE_JSON)
+                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
                 .build();
         try {
             final Response response = client.newCall(request).execute();
             return response.code() == SUCCESS_CODE;
-        } catch (IOException | JSONException ex) {
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    // "https://quizcraft-eb0a5.firebaseio.com"
-// "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key="
     @Override
     public void save(User user) {
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
-//        // POST METHOD
+
         final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
-        final JSONObject requestBody = new JSONObject(String.format("{\"fields\": {\"username\": {\"stringValue\": \"%s\"}, \"password\": {\"stringValue\": \"%s\"}}}", user.getUsername(), user.getPassword()));
+        final JSONObject requestBody = new JSONObject(String
+            .format("{\"fields\": {\"username\": {\"stringValue\": \"%s\"}, \"password\": {\"stringValue\": \"%s\"}}}",
+                user.getUsername(), user.getPassword()));
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
         final Request request = new Request.Builder()
                 .url(STORAGE_URL + PATH_TO_USERS + "?documentId=" + user.getUsername())
@@ -125,10 +134,12 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
 
             if (response.code() == SUCCESS_CODE) {
                 // success!
-            } else {
-                throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
             }
-        } catch (IOException | JSONException ex) {
+            else {
+                throw new RuntimeException(responseBody.getJSONObject("error").getString(MESSAGE));
+            }
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -145,48 +156,49 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
 
     @Override
     public void saveQuiz(Quiz quiz, String username) {
-        String documentName = quiz.getName() + "-" + username;
+        final String documentName = quiz.getName() + CONNECT + username;
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
-        JSONObject requestBody = new JSONObject();
-        JSONObject fields = new JSONObject();
-        requestBody.put("fields", fields);
+        final JSONObject requestBody = new JSONObject();
+        final JSONObject fields = new JSONObject();
+        requestBody.put(FIELDS, fields);
 
         // Add quiz name
-        fields.put("quizName", new JSONObject().put("stringValue", quiz.getName()));
+        fields.put("quizName", new JSONObject().put(STRINGVALUE, quiz.getName()));
 
         // Add quiz questions
-        JSONArray quizQuestions = new JSONArray();
+        final JSONArray quizQuestions = new JSONArray();
         for (QuizQuestion quizQuestion : quiz.getQuestions()) {
-            JSONObject quizQuestionJSON = new JSONObject();
-            JSONObject questionFields = new JSONObject();
+            final JSONObject quizQuestionJSON = new JSONObject();
+            final JSONObject questionFields = new JSONObject();
 
             // Add question text
-            questionFields.put("question", new JSONObject().put("stringValue", quizQuestion.getQuestion()));
+            questionFields.put(QUESTION, new JSONObject().put(STRINGVALUE, quizQuestion.getQuestion()));
 
             // Add correct answer index
-            questionFields.put("correctAnswer", new JSONObject().put("integerValue", quizQuestion.getCorrectIndex()));
+            questionFields.put(CORRECTANSWER, new JSONObject().put("integerValue", quizQuestion.getCorrectIndex()));
 
             // Add answers array
-            JSONArray answers = new JSONArray();
-            for (String answer : quizQuestion.getAnswers()) {
-                answers.put(new JSONObject().put("stringValue", answer));
-            }
-            questionFields.put("answers", new JSONObject().put("arrayValue", new JSONObject().put("values", answers)));
 
-            quizQuestionJSON.put("fields", questionFields);
-            quizQuestions.put(new JSONObject().put("mapValue", quizQuestionJSON));
+            final JSONArray answers = new JSONArray();
+            for (String answer : quizQuestion.getAnswers()) {
+                answers.put(new JSONObject().put(STRINGVALUE, answer));
+            }
+            questionFields.put(ANSWERS, new JSONObject().put(ARRAYVALUE, new JSONObject().put(VALUES, answers)));
+
+            quizQuestionJSON.put(FIELDS, questionFields);
+            quizQuestions.put(new JSONObject().put(MAPVALUE, quizQuestionJSON));
         }
 
-        fields.put("quizQuestions", new JSONObject().put("arrayValue", new JSONObject().put("values", quizQuestions)));
+        fields.put(QUIZ_QUESTIONS, new JSONObject().put(ARRAYVALUE, new JSONObject().put(VALUES, quizQuestions)));
 
         // Add username as userID
-        fields.put("userID", new JSONObject().put("stringValue", username));
+        fields.put("userID", new JSONObject().put(STRINGVALUE, username));
 
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
         final Request request = new Request.Builder()
-                .url(STORAGE_URL + "quizzes/" + "?documentId=" + documentName)
+                .url(STORAGE_URL + QUIZZES_URL + "?documentId=" + documentName)
                 .method("POST", body)
                 .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
                 .build();
@@ -196,24 +208,26 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == SUCCESS_CODE) {
-//                success
-            } else {
-                throw new RuntimeException(responseBody.getJSONObject("error").getString("message"));
+                System.out.println("Success");
             }
-        } catch (IOException | JSONException ex) {
+            else {
+                throw new RuntimeException(responseBody.getJSONObject("error").getString(MESSAGE));
+            }
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     @Override
     public List<String> getQuizzes(String username) {
-        OkHttpClient client = new OkHttpClient();
+        final OkHttpClient client = new OkHttpClient();
 
-        String url = STORAGE_URL + "quizzes/";
+        final String url = STORAGE_URL + QUIZZES_URL;
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Content-Type", "application/json")
+                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
                 .build();
         try {
             final Response response = client.newCall(request).execute();
@@ -221,39 +235,41 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == SUCCESS_CODE) {
-                List<String> result = new ArrayList<>();
-                JSONArray documents = responseBody.getJSONArray("documents");
+                final List<String> result = new ArrayList<>();
+                final JSONArray documents = responseBody.getJSONArray("documents");
                 for (int i = 0; i < documents.length(); i++) {
-                    JSONObject document = documents.getJSONObject(i);
-                    String name = document.getString("name");
+                    final JSONObject document = documents.getJSONObject(i);
+                    final String name = document.getString("name");
 
                     // Extract only the document ID from the full path
-                    String documentId = name.substring(name.lastIndexOf('/') + 1);
-                    String[] parts = documentId.split("-");
+                    final String documentId = name.substring(name.lastIndexOf('/') + 1);
+                    final String[] parts = documentId.split(CONNECT);
 
                     if (parts[1].equals(username)) {
                         result.add(parts[0]);
                     }
                 }
                 return result;
-            } else {
+            }
+            else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
             }
-        } catch (IOException | JSONException ex) {
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    //TODO: Please implement this Kirill, I need this to allow viewing for pre existing quizzes in the dashboard, seperate from CreqteQuiz.
     @Override
     public List<Map<String, Object>> getQuizData(String username, String quizName) {
-        OkHttpClient client = new OkHttpClient();
+        List<Map<String, Object>> result = new ArrayList<>();
+        final OkHttpClient client = new OkHttpClient();
 
-        String url = STORAGE_URL + "quizzes/";
+        final String url = STORAGE_URL + QUIZZES_URL;
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Content-Type", "application/json")
+                .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
                 .build();
         try {
             final Response response = client.newCall(request).execute();
@@ -261,44 +277,48 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == SUCCESS_CODE) {
-                List<Map<String, Object>> result = new ArrayList<>();
-                JSONArray documents = responseBody.getJSONArray("documents");
+                final JSONArray documents = responseBody.getJSONArray("documents");
                 for (int i = 0; i < documents.length(); i++) {
-                    JSONObject document = documents.getJSONObject(i);
-                    String name = document.getString("name");
+                    final JSONObject document = documents.getJSONObject(i);
+                    final String name = document.getString("name");
 
                     // Extract only the document ID from the full path
-                    String documentId = name.substring(name.lastIndexOf('/') + 1);
-                    String[] parts = documentId.split("-");
+                    final String documentId = name.substring(name.lastIndexOf('/') + 1);
+                    final String[] parts = documentId.split(CONNECT);
 
                     if (parts[1].equals(username) && parts[0].equals(quizName)) {
-                        final JSONObject quizJSONObject = document.getJSONObject("fields").getJSONObject("quizQuestions");
-                        List<Map<String, Object>> quizQuestion = cleanUpFirebaseJson(quizJSONObject);
-                        return quizQuestion;
+                        final JSONObject quizJSONObject = document.getJSONObject(FIELDS)
+                            .getJSONObject(QUIZ_QUESTIONS);
+                        result = cleanUpFirebaseJson(quizJSONObject);
+                        break;
                     }
                 }
             }
-        } catch (IOException | JSONException ex) {
+        }
+        catch (IOException | JSONException ex) {
             throw new RuntimeException(ex);
         }
-        return null;
+        return result;
     }
 
     private static List<Map<String, Object>> cleanUpFirebaseJson(JSONObject jsonObject) {
-        JSONArray questions = jsonObject.getJSONObject("arrayValue").getJSONArray("values");
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Object question : questions){
-            Map<String, Object> questionInfo = new HashMap<>();
-            String text = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("question").getString("stringValue");
-            Integer correctIndex = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("correctAnswer").getInt("integerValue");
-            JSONArray answers = ((JSONObject) question).getJSONObject("mapValue").getJSONObject("fields").getJSONObject("answers").getJSONObject("arrayValue").getJSONArray("values");
-            List<String> answersText = new ArrayList<>();
-            for (Object answer : answers){
-                answersText.add(((JSONObject) answer).getString("stringValue"));
+        final JSONArray questions = jsonObject.getJSONObject(ARRAYVALUE).getJSONArray(VALUES);
+        final List<Map<String, Object>> result = new ArrayList<>();
+        for (Object question : questions) {
+            final Map<String, Object> questionInfo = new HashMap<>();
+            final String text = ((JSONObject) question).getJSONObject(MAPVALUE).getJSONObject(FIELDS)
+                .getJSONObject(QUESTION).getString(STRINGVALUE);
+            final Integer correctIndex = ((JSONObject) question).getJSONObject(MAPVALUE).getJSONObject(FIELDS)
+                .getJSONObject(CORRECTANSWER).getInt("integerValue");
+            final JSONArray answers = ((JSONObject) question).getJSONObject(MAPVALUE).getJSONObject(FIELDS)
+                .getJSONObject(ANSWERS).getJSONObject(ARRAYVALUE).getJSONArray(VALUES);
+            final List<String> answersText = new ArrayList<>();
+            for (Object answer : answers) {
+                answersText.add(((JSONObject) answer).getString(STRINGVALUE));
             }
-            questionInfo.put("question", text);
-            questionInfo.put("correctAnswer", correctIndex);
-            questionInfo.put("answers", answersText);
+            questionInfo.put(QUESTION, text);
+            questionInfo.put(CORRECTANSWER, correctIndex);
+            questionInfo.put(ANSWERS, answersText);
             result.add(questionInfo);
         }
         return result;

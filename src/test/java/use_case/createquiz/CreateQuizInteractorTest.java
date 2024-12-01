@@ -29,7 +29,7 @@ public class CreateQuizInteractorTest {
     @Test
     void successTest() {
         InMemoryUserDataAccessObject mockDataAccess = new InMemoryUserDataAccessObject();
-        URL resource = getClass().getResource("/createQuizTest/ACT_A_Kirill_Utyashev.pdf");
+        URL resource = getClass().getResource("/createQuizTest/test_file.pdf");
         assertNotNull(resource, "File not found in test resources");
         File file = new File(resource.getFile());
         String filePath = file.getAbsolutePath();
@@ -243,7 +243,7 @@ public class CreateQuizInteractorTest {
     @Test
     void executeQuizCouldNotBeCreatedTest() {
         InMemoryUserDataAccessObject mockDataAccess = new InMemoryUserDataAccessObject();
-        URL resource = getClass().getResource("/createQuizTest/ACT_A_Kirill_Utyashev.pdf");
+        URL resource = getClass().getResource("/createQuizTest/test_file.pdf");
         assertNotNull(resource, "File not found in test resources");
         File file = new File(resource.getFile());
         String filePath = file.getAbsolutePath();
@@ -278,7 +278,7 @@ public class CreateQuizInteractorTest {
     @Test
     void executeCohereAPIThrowsExceptionTest() {
         InMemoryUserDataAccessObject mockDataAccess = new InMemoryUserDataAccessObject();
-        URL resource = getClass().getResource("/createQuizTest/ACT_A_Kirill_Utyashev.pdf");
+        URL resource = getClass().getResource("/createQuizTest/test_file.pdf");
         assertNotNull(resource, "File not found in test resources");
         File file = new File(resource.getFile());
         String filePath = file.getAbsolutePath();
