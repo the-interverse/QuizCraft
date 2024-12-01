@@ -1,4 +1,4 @@
-package use_case.createquiz;
+package use_case.create_quiz;
 
 import ai_access.AIAccessInterface;
 import ai_access.CohereAPI;
@@ -6,7 +6,6 @@ import data_access.InMemoryUserDataAccessObject;
 import entity.Quiz;
 import entity.QuizFactory;
 import org.junit.jupiter.api.Test;
-import use_case.create_quiz.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,12 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class CreateQuizInteractorTest {
+class CreateQuizInteractorTest {
 
     @Test
     void successTest() {
