@@ -18,7 +18,18 @@ public interface DashboardOutputBoundary {
      * @param errorMessage the explanation of the failure
      */
     void prepareFailView(String errorMessage);
+    /**
+     * Prepares the failure view for the Login Use Case.
+     *
+     */
+
     void switchToCreateQuizView();
+    /**
+     * Prepares the failure view for the Login Use Case.
+     * @param quizData quiz data
+     * @param quizName quiz name
+     */
+
     void switchToViewQuizView(List<Map<String, Object>> quizData, String quizName);
 }
 
