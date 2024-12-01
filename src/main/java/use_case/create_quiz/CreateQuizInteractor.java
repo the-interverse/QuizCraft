@@ -38,42 +38,37 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         final String difficulty = createQuizInputData.getDifficulty();
         final String filePath = createQuizInputData.getFilepath();
         final String username = createQuizInputData.getUsername();
-        //final String username = "kirill";
-        System.out.println(username);
         if (quizName == null || quizName.isEmpty()) {
             createQuizPresenter.prepareFailView("Quiz name cannot be empty. Please choose another name.");
-        }
-        if (numQuestions < 1) {
+        } else if (numQuestions < 1) {
             createQuizPresenter.prepareFailView("Number of questions cannot be less than 1. Please choose more questions");
         } else if (numQuestions > 5) {
             createQuizPresenter.prepareFailView("Number of questions cannot be more than 5. Please choose less questions");
-        }
-
-        if (quizDataAccessObject.quizExistsByName(username, quizName)) {
+        } else if (quizDataAccessObject.quizExistsByName(username, quizName)) {
             createQuizPresenter.prepareFailView("Quiz with this name already exists. Please choose another name");
-        }
-        try {
-            String courseMaterial = TextExtractor.extractText(filePath);
-            String quizJSON = "";
+        } else
             try {
-                quizJSON = cohereAPI.callAPI(courseMaterial, quizName, numQuestions, difficulty);
-                Quiz quiz = quizFactory.create(quizJSON, difficulty);
-                if (quiz == null) {
-                    createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
+                String courseMaterial = TextExtractor.extractText(filePath);
+                String quizJSON = "";
+                try {
+                    quizJSON = cohereAPI.callAPI(courseMaterial, quizName, numQuestions, difficulty);
+                    Quiz quiz = quizFactory.create(quizJSON, difficulty);
+                    if (quiz == null) {
+                        createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
+                    } else {
+                        quizDataAccessObject.saveQuiz(quiz, username);
+                        final List<Map<String, Object>> questions = getQuestions(quiz);
+                        final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
+                        createQuizPresenter.prepareSuccessView(createQuizOutputData);
+                    }
+                } catch (Exception e) {
+                    createQuizPresenter.prepareFailView(e.getMessage());
                 }
-                quizDataAccessObject.saveQuiz(quiz, username);
-                assert quiz != null;
-                final List<Map<String, Object>> questions = getQuestions(quiz);
-                final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
-                createQuizPresenter.prepareSuccessView(createQuizOutputData);
-            } catch (Exception e) {
-                createQuizPresenter.prepareFailView(e.getMessage());
+            } catch (IOException e) {
+                createQuizPresenter.prepareFailView("Parsing error: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                createQuizPresenter.prepareFailView("Wrong file format: " + e.getMessage());
             }
-        } catch (IOException e) {
-            createQuizPresenter.prepareFailView("Parsing error: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            createQuizPresenter.prepareFailView("Wrong file format: " + e.getMessage());
-        }
     }
 
     @NotNull
