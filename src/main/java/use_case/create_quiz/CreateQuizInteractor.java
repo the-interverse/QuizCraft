@@ -4,6 +4,7 @@ import entity.Quiz;
 import entity.QuizFactory;
 import entity.QuizQuestion;
 import org.jetbrains.annotations.NotNull;
+
 import use_case.create_quiz.parsers.TextExtractor;
 
 import java.io.IOException;
@@ -61,12 +62,15 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
                         final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
                         createQuizPresenter.prepareSuccessView(createQuizOutputData);
                     }
-                } catch (Exception e) {
-                    createQuizPresenter.prepareFailView(e.getMessage());
                 }
-            } catch (IOException e) {
+                catch (IOException exception) {
+                    createQuizPresenter.prepareFailView(exception.getMessage());
+                }
+            }
+            catch (IOException e) {
                 createQuizPresenter.prepareFailView("Parsing error: " + e.getMessage());
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 createQuizPresenter.prepareFailView("Wrong file format: " + e.getMessage());
             }
     }

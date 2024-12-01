@@ -57,26 +57,28 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
 
     @Override
     public boolean quizExistsByName(String username, String quizName) {
-        List<Quiz> userQuizzes = quizzes.get(username);
+        boolean exists = false;
+        final List<Quiz> userQuizzes = quizzes.get(username);
         if (userQuizzes == null) {
-            return false;
+            exists = false;
         }
         else {
             for (Quiz quiz : userQuizzes) {
-                if (quiz.getName().equals(quizName)){
-                    return true;
+                if (quiz.getName().equals(quizName)) {
+                    exists = true;
                 }
             }
         }
-        return false;
+        return exists;
     }
 
     @Override
     public void saveQuiz(Quiz quiz, String username) {
         if (quizzes.containsKey(username)) {
             quizzes.get(username).add(quiz);
-        } else {
-            List<Quiz> userQuizzes = new ArrayList<>();
+        }
+        else {
+            final List<Quiz> userQuizzes = new ArrayList<>();
             userQuizzes.add(quiz);
             quizzes.put(username, userQuizzes);
         }
@@ -85,7 +87,7 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public List<String> getQuizzes(String username) {
         if (quizzes.containsKey(username)) {
-            List<String> quizNames = new ArrayList<>();
+            final List<String> quizNames = new ArrayList<>();
             for (Quiz userQuiz : quizzes.get(username)) {
                 quizNames.add(userQuiz.getName());
             }
@@ -97,12 +99,12 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     public List<Map<String, Object>> getQuizData(String username, String quizName) {
         if (quizzes.containsKey(username)) {
             for (Quiz userQuiz: quizzes.get(username)) {
-                if (userQuiz.getName().equals(quizName)){
-                    List<Map<String, Object>> quizData = new ArrayList<>();
+                if (userQuiz.getName().equals(quizName)) {
+                    final List<Map<String, Object>> quizData = new ArrayList<>();
                     for (QuizQuestion quizQuestion : userQuiz.getQuestions()) {
                         quizData.add(Map.of("question", quizQuestion.getQuestion()));
                         quizData.add(Map.of("correctAnswer", quizQuestion.getCorrectIndex()));
-                        List<String> answers = new ArrayList<>();
+                        final List<String> answers = new ArrayList<>();
                         answers.addAll(quizQuestion.getAnswers());
                         quizData.add(Map.of("answers", answers));
                     }

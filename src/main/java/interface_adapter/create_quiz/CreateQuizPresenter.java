@@ -25,15 +25,13 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
         this.dashboardViewModel = dashboardViewModel;
     }
 
-
     @Override
     public void prepareSuccessView(CreateQuizOutputData data) {
-//        On success, switch to ViewQuiz view
 //        CreateQuizState state = createQuizViewModel.getState();
 //        state.setQuizName(data.getQuizName());
 //        state.setDifficulty(data.getQuiz().getDifficulty());
-
-        System.out.println("Quiz Created Successfully: " + data.getQuizName());
+//
+//        System.out.println("Quiz Created Successfully: " + data.getQuizName());
 //        createQuizViewModel.firePropertyChanged();
 //
 //        viewManagerModel.setState(loggedInViewModel.getViewName());
@@ -42,10 +40,10 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        CreateQuizState state = createQuizViewModel.getState();
-        state.setErrorMessage(errorMessage);
-        System.out.println("Failed to create quiz: " + errorMessage);
-        createQuizViewModel.firePropertyChanged();
+//        CreateQuizState state = createQuizViewModel.getState();
+//        state.setErrorMessage(errorMessage);
+//        System.out.println("Failed to create quiz: " + errorMessage);
+//        createQuizViewModel.firePropertyChanged();
     }
 
     @Override
