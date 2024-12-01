@@ -1,10 +1,13 @@
+
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import entity.Quiz;
+import entity.QuizQuestion;
 import entity.User;
 import use_case.create_quiz.CreateQuizDataAccessInterface;
 import use_case.dashboard.DashboardDataAccessInterface;
@@ -58,26 +61,54 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         if (userQuizzes == null) {
             return false;
         }
-//        else {
-//
+        else {
+            for (Quiz quiz : userQuizzes) {
+                if (quiz.getName().equals(quizName)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public void saveQuiz(Quiz quiz, String username) {
-
+        if (quizzes.containsKey(username)) {
+            quizzes.get(username).add(quiz);
+        } else {
+            List<Quiz> userQuizzes = new ArrayList<>();
+            userQuizzes.add(quiz);
+            quizzes.put(username, userQuizzes);
+        }
     }
 
     @Override
     public List<String> getQuizzes(String username) {
+        if (quizzes.containsKey(username)) {
+            List<String> quizNames = new ArrayList<>();
+            for (Quiz userQuiz : quizzes.get(username)) {
+                quizNames.add(userQuiz.getName());
+            }
+        }
         return List.of();
     }
 
-
-    //TODO: This must also be implemented
     @Override
     public List<Map<String, Object>> getQuizData(String username, String quizName) {
-        return null;
+        if (quizzes.containsKey(username)) {
+            for (Quiz userQuiz: quizzes.get(username)) {
+                if (userQuiz.getName().equals(quizName)){
+                    List<Map<String, Object>> quizData = new ArrayList<>();
+                    for (QuizQuestion quizQuestion : userQuiz.getQuestions()) {
+                        quizData.add(Map.of("question", quizQuestion.getQuestion()));
+                        quizData.add(Map.of("correctAnswer", quizQuestion.getCorrectIndex()));
+                        List<String> answers = new ArrayList<>();
+                        answers.addAll(quizQuestion.getAnswers());
+                        quizData.add(Map.of("answers", answers));
+                    }
+                }
+            }
+        }
+        return List.of();
     }
-
 }
