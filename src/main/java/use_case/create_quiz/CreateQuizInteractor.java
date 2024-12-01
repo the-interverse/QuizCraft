@@ -57,36 +57,32 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
             createQuizPresenter.prepareFailView("Quiz with this name already exists. Please choose another name");
         }
         else {
-            createQuiz(filePath, quizName, numQuestions, difficulty, username);
-        }
-    }
-
-    private void createQuiz(String filePath, String quizName, Integer numQuestions, String difficulty, String username) {
-        try {
-            final String courseMaterial = TextExtractor.extractText(filePath);
-            String quizJSON = "";
             try {
-                quizJSON = cohereApi.callAPI(courseMaterial, quizName, numQuestions, difficulty);
-                final Quiz quiz = quizFactory.create(quizJSON, difficulty);
-                if (quiz == null) {
-                    createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
+                final String courseMaterial = TextExtractor.extractText(filePath);
+                String quizJSON = "";
+                try {
+                    quizJSON = cohereApi.callAPI(courseMaterial, quizName, numQuestions, difficulty);
+                    final Quiz quiz = quizFactory.create(quizJSON, difficulty);
+                    if (quiz == null) {
+                        createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
+                    }
+                    else {
+                        quizDataAccessObject.saveQuiz(quiz, username);
+                        final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName,
+                            getQuestions(quiz));
+                        createQuizPresenter.prepareSuccessView(createQuizOutputData);
+                    }
                 }
-                else {
-                    quizDataAccessObject.saveQuiz(quiz, username);
-                    final List<Map<String, Object>> questions = getQuestions(quiz);
-                    final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName, questions);
-                    createQuizPresenter.prepareSuccessView(createQuizOutputData);
+                catch (IOException exception) {
+                    createQuizPresenter.prepareFailView(exception.getMessage());
                 }
             }
             catch (IOException exception) {
-                createQuizPresenter.prepareFailView(exception.getMessage());
+                createQuizPresenter.prepareFailView("Parsing error: " + exception.getMessage());
             }
-        }
-        catch (IOException exception) {
-            createQuizPresenter.prepareFailView("Parsing error: " + exception.getMessage());
-        }
-        catch (IllegalArgumentException exception) {
-            createQuizPresenter.prepareFailView("Wrong file format: " + exception.getMessage());
+            catch (IllegalArgumentException exception) {
+                createQuizPresenter.prepareFailView("Wrong file format: " + exception.getMessage());
+            }
         }
     }
 
