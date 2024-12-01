@@ -1,4 +1,4 @@
-package use_case.create_quiz.parsers;
+package parsers;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import java.io.FileInputStream;

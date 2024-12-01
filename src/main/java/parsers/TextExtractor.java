@@ -1,4 +1,4 @@
-package use_case.create_quiz.parsers;
+package parsers;
 import java.io.IOException;
 
 public class TextExtractor {
