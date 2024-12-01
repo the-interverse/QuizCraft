@@ -228,7 +228,7 @@ public class CreateQuizInteractorTest {
 
             @Override
             public void prepareFailView(String error) {
-                assertEquals("Parsing error: article.pdf (No such file or directory)", error);
+                assertTrue("Parsing error: article.pdf (No such file or directory)".equals(error) || "Parsing error: article.pdf (The system cannot find the file specified)".equals(error));
             }
 
             @Override
