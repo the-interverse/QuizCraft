@@ -1,16 +1,17 @@
 package use_case.create_quiz;
 
-import ai_access.AIAccessInterface;
-import ai_access.CohereAPI;
+import ai_access.AbstractAiPrompter;
+import ai_access.CohereApi;
 import data_access.InMemoryUserDataAccessObject;
 import entity.Quiz;
 import entity.QuizFactory;
+
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
 
 class CreateQuizInteractorTest {
 
@@ -51,7 +51,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -75,7 +75,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -99,7 +99,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -123,7 +123,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -184,7 +184,7 @@ class CreateQuizInteractorTest {
         };
         QuizFactory quizFactory = new QuizFactory();
         mockDataAccess.saveQuiz(quizFactory.create("Quiz", List.of(), difficulty), "kirill");
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, quizFactory, new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, quizFactory, new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -208,7 +208,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -232,7 +232,7 @@ class CreateQuizInteractorTest {
                 fail("Switching views is not expected in this test.");
             }
         };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereAPI());
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new CohereApi());
         interactor.execute(inputData);
     }
 
@@ -261,48 +261,14 @@ class CreateQuizInteractorTest {
             }
         };
 
-        AIAccessInterface mockAIAccess = new AIAccessInterface() {
-            @Override
-            public String callAPI(String courseMaterial, String quizName, Integer numQuestions, String difficulty) throws IOException {
-                return "wrong JSON format";
-            }
-        };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), mockAIAccess);
-        interactor.execute(inputData);
-    }
-
-    @Test
-    void executeCohereAPIThrowsExceptionTest() {
-        InMemoryUserDataAccessObject mockDataAccess = new InMemoryUserDataAccessObject();
-        URL resource = getClass().getResource("/createQuizTest/test_file.pdf");
-        assertNotNull(resource, "File not found in test resources");
-        File file = new File(resource.getFile());
-        String filePath = file.getAbsolutePath();
-        CreateQuizInputData inputData = new CreateQuizInputData("Quiz", 2, "Easy", filePath, "kirill");
-        CreateQuizOutputBoundary successPresenter = new CreateQuizOutputBoundary() {
-            @Override
-            public void prepareSuccessView(CreateQuizOutputData outputData) {
-                fail("Use case success is not expected.");
-            }
+        class DummyAi extends AbstractAiPrompter {
 
             @Override
-            public void prepareFailView(String error) {
-                assertEquals("Test exception", error);
+            protected String callApi(String prompt, Map<String, Object> schema) throws JSONException {
+                return "wrong json format";
             }
-
-            @Override
-            public void switchToDashboardView(List<String> quizzes) {
-                fail("Switching views is not expected in this test.");
-            }
-        };
-
-        AIAccessInterface mockAIAccess = new AIAccessInterface() {
-            @Override
-            public String callAPI(String courseMaterial, String quizName, Integer numQuestions, String difficulty) throws IOException {
-                throw new IOException("Test exception");
-            }
-        };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), mockAIAccess);
+        }
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new DummyAi());
         interactor.execute(inputData);
     }
 
@@ -326,15 +292,14 @@ class CreateQuizInteractorTest {
                 assertTrue(true, "Switch to Create Dashboard View triggered.");
             }
         };
+        class DummyAi extends AbstractAiPrompter {
 
-        AIAccessInterface mockAIAccess = new AIAccessInterface() {
             @Override
-            public String callAPI(String courseMaterial, String quizName, Integer numQuestions, String difficulty) throws IOException {
-                throw new IOException("Test exception");
+            protected String callApi(String prompt, Map<String, Object> schema) throws JSONException {
+                return "";
             }
-        };
-        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), mockAIAccess);
+        }
+        CreateQuizInputBoundary interactor = new CreateQuizInteractor(successPresenter, mockDataAccess, new QuizFactory(), new DummyAi());
         interactor.switchToDashboardView(username);
     }
-
 }

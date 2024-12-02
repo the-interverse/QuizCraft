@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import ai_access.CohereAPI;
+import ai_access.CohereApi;
 import data_access.DBUserDataAccessObject;
 import entity.QuizFactory;
 import entity.UserFactory;
@@ -37,10 +37,6 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
-import interface_adapter.dashboard.DashboardViewModel;
-import interface_adapter.create_quiz.CreateQuizController;
-import interface_adapter.create_quiz.CreateQuizPresenter;
-import interface_adapter.create_quiz.CreateQuizViewModel;
 import use_case.create_quiz.CreateQuizInteractor;
 import use_case.create_quiz.CreateQuizInputBoundary;
 import use_case.create_quiz.CreateQuizOutputBoundary;
@@ -70,7 +66,7 @@ public class AppBuilder {
 
     // thought question: is the hard dependency below a problem?
     private final DBUserDataAccessObject programDataAccessObject = new DBUserDataAccessObject(new UserFactory());
-    private final CohereAPI aiAccessObject = new CohereAPI();
+    private final CohereApi aiAccessObject = new CohereApi();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;

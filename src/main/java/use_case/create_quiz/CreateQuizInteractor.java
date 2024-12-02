@@ -1,5 +1,6 @@
 package use_case.create_quiz;
 
+import ai_access.AbstractAiPrompter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-import ai_access.AIAccessInterface;
 import entity.Quiz;
 import entity.QuizFactory;
 import entity.QuizQuestion;
@@ -23,12 +23,12 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
     private final CreateQuizDataAccessInterface quizDataAccessObject;
     private final CreateQuizOutputBoundary createQuizPresenter;
     private final QuizFactory quizFactory;
-    private final AIAccessInterface cohereApi;
+    private final AbstractAiPrompter cohereApi;
 
     public CreateQuizInteractor(CreateQuizOutputBoundary createQuizPresenter,
                                 CreateQuizDataAccessInterface quizDataAccessObject,
                                 QuizFactory quizFactory,
-                                AIAccessInterface aiAccesObject) {
+                                AbstractAiPrompter aiAccesObject) {
         this.createQuizPresenter = createQuizPresenter;
         this.quizDataAccessObject = quizDataAccessObject;
         this.quizFactory = quizFactory;
@@ -60,21 +60,16 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
             try {
                 final String courseMaterial = TextExtractor.extractText(filePath);
                 String quizJSON = "";
-                try {
-                    quizJSON = cohereApi.callAPI(courseMaterial, quizName, numQuestions, difficulty);
-                    final Quiz quiz = quizFactory.create(quizJSON, difficulty);
-                    if (quiz == null) {
-                        createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
-                    }
-                    else {
-                        quizDataAccessObject.saveQuiz(quiz, username);
-                        final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName,
-                            getQuestions(quiz));
-                        createQuizPresenter.prepareSuccessView(createQuizOutputData);
-                    }
+                quizJSON = cohereApi.generateQuiz(courseMaterial, quizName, numQuestions, difficulty);
+                final Quiz quiz = quizFactory.create(quizJSON, difficulty);
+                if (quiz == null) {
+                    createQuizPresenter.prepareFailView("Quiz could not be created. Please try again.");
                 }
-                catch (IOException exception) {
-                    createQuizPresenter.prepareFailView(exception.getMessage());
+                else {
+                    quizDataAccessObject.saveQuiz(quiz, username);
+                    final CreateQuizOutputData createQuizOutputData = new CreateQuizOutputData(quizName,
+                        getQuestions(quiz));
+                    createQuizPresenter.prepareSuccessView(createQuizOutputData);
                 }
             }
             catch (IOException exception) {
