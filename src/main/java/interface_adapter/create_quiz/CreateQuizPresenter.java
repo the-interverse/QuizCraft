@@ -3,6 +3,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.dashboard.DashboardState;
 import interface_adapter.dashboard.DashboardViewModel;
 import interface_adapter.view_and_take_quiz.ViewQuizViewModel;
+import java.util.Map;
 import use_case.create_quiz.CreateQuizOutputBoundary;
 import use_case.create_quiz.CreateQuizOutputData;
 
@@ -27,28 +28,24 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void prepareSuccessView(CreateQuizOutputData data) {
-//        CreateQuizState state = createQuizViewModel.getState();
-//        state.setQuizName(data.getQuizName());
-//        state.setDifficulty(data.getQuiz().getDifficulty());
-//
-//        System.out.println("Quiz Created Successfully: " + data.getQuizName());
-//        createQuizViewModel.firePropertyChanged();
-//
-//        viewManagerModel.setState(loggedInViewModel.getViewName());
-//        viewManagerModel.firePropertyChanged();
+        viewManagerModel.setState(viewQuizViewModel.getViewName());
+        viewQuizViewModel.getState().setQuizQuestionsAndOptions(data.getQuestions());
+        viewQuizViewModel.getState().setQuizName(data.getQuizName());
+        viewQuizViewModel.firePropertyChanged();
+        viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void prepareFailView(String errorMessage) {
-//        CreateQuizState state = createQuizViewModel.getState();
-//        state.setErrorMessage(errorMessage);
-//        System.out.println("Failed to create quiz: " + errorMessage);
-//        createQuizViewModel.firePropertyChanged();
+        final CreateQuizState state = createQuizViewModel.getState();
+        state.setErrorMessage(errorMessage);
+        createQuizViewModel.setState(state);
+        createQuizViewModel.firePropertyChanged();
     }
 
     @Override
     public void switchToDashboardView(List<String> quizzes) {
-        DashboardState state = dashboardViewModel.getState();
+        final DashboardState state = dashboardViewModel.getState();
         state.setQuizzes(quizzes);
         dashboardViewModel.setState(state);
         dashboardViewModel.firePropertyChanged();
